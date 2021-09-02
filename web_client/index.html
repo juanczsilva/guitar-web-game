@@ -11,8 +11,12 @@
     <div id="main">
         <div id="events" class="events left">Eventos</div>
         <div id="btns" class="btns right">Botones</div>
-        <div id="video" class="video">
-            <iframe style="width: 100%; height: 500px;" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
+        <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
+            <iframe id="player" frameborder="0" height="100%" width="100%" 
+                src="https://www.youtube.com/embed/qWdz904KY18?enablejsapi=1&origin=http://localhost:8080&controls=0&autoplay=0"></iframe>
+        </div>
+        <div id="neck" class="neck">
+            <img id="imgneck" class="imgneck" src="./imgs/neck.png" />
         </div>
     </div>
     <h1 id="test" style="position: absolute; bottom: 0;"></h1>
