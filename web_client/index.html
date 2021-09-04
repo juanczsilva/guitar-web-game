@@ -3,22 +3,25 @@
 <head>
     <meta charset='utf-8'>
     <title>guitar-web-game</title>
+    <link rel="icon" type="image/png" href="./imgs/ico.png" />
     <link rel='stylesheet' type='text/css' href='cl.css'>
     <script src="/socket.io/socket.io.js"></script>
     <script src='cl.js'></script>
 </head>
 <body>
+    <div id="topbar" style="position: absolute; top: 0; background-color: black; width: 100%; height: 60px;"></div>
     <div id="main">
         <div id="events" class="events left">Eventos</div>
         <div id="btns" class="btns right">Botones</div>
         <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
             <iframe id="player" frameborder="0" height="100%" width="100%" 
-                src="https://www.youtube.com/embed/qWdz904KY18?enablejsapi=1&origin=http://localhost:8080&controls=0&autoplay=0"></iframe>
+                src="https://www.youtube.com/embed/qWdz904KY18?enablejsapi=1&origin=http://localhost:8080&controls=0&autoplay=0&rel=0&showinfo=0"></iframe>
         </div>
         <div id="neck" class="neck">
             <img id="imgneck" class="imgneck" src="./imgs/neck.png" />
+            <div id="hitnotegreen" class="hitnote"></div>
         </div>
     </div>
-    <h1 id="test" style="position: absolute; bottom: 0;"></h1>
+    <div id="topbot" style="position: absolute; bottom: 0; background-color: black; width: 100%; height: 60px;"></div>
 </body>
 </html>
