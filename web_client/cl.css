@@ -63,13 +63,52 @@ body {
     background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(0,77,0,1) 100%, rgba(255,255,255,1) 100%);
 }
 
+.note-red {
+    background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(77,0,0,1) 100%, rgba(255,255,255,1) 100%);
+}
+
+.note-yellow {
+    background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(77,77,0,1) 100%, rgba(255,255,255,1) 100%);
+}
+
+.note-blue {
+    background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(0,0,77,1) 100%, rgba(255,255,255,1) 100%);
+}
+
+.note-orange {
+    background: linear-gradient(180deg, rgba(0,0,0,1) 20%, rgba(255,77,0,1) 100%, rgba(255,255,255,1) 100%);
+}
+
 .hitnote {
     position: absolute;
     width: 30%;
     height: 5%;
     top: 115%; 
-    left: -45%;
-    background: deeppink;
+    background: rgba(77,77,77,0.1);
     border-radius: 50%;
     border-bottom: 1px solid #b8b8b8;
+}
+
+.hitnote-green {
+    left: -45%;
+}
+
+.hitnote-red {
+    left: -5%;
+}
+
+.hitnote-yellow {
+    left: 35%;
+}
+
+.hitnote-blue {
+    left: 75%;
+}
+
+.hitnote-orange {
+    left: 115%;
+}
+
+.hitnote-pressed {
+    background: rgba(77,77,77,1);
 }
