@@ -39,11 +39,11 @@ function elementAnimate(item, type) {
   switch (type) {
     case 0:
       noteLeftStart = "20%";
-      noteLeftEnd = "-45%";
+      noteLeftEnd = "-50%";
     break;
     case 1:
       noteLeftStart = "32.5%";
-      noteLeftEnd = "-5%";
+      noteLeftEnd = "-7.5%";
     break;
     case 2:
       noteLeftStart = "45%";
@@ -51,11 +51,11 @@ function elementAnimate(item, type) {
     break;
     case 3:
       noteLeftStart = "57.5%";
-      noteLeftEnd = "75%";
+      noteLeftEnd = "77.5%";
     break;
     case 4:
       noteLeftStart = "70%";
-      noteLeftEnd = "115%";
+      noteLeftEnd = "120%";
     break;
   }
   item.animate([
@@ -112,6 +112,15 @@ function isColliding(div1, div2) {
   return !(d1Top < d2OffsetTop || d1OffsetTop > d2Top || d1Left < d2OffsetLeft || d1OffsetLeft > d2Left);
 }
 
+let score = 0;
+
+function hitNote(note) {
+  note.remove();
+  //fuego
+  score += 100;
+  document.getElementById("topbot").innerHTML = ("SCORE: " + score);
+}
+
 let greenPressed = false;
 let redPressed = false;
 let yellowPressed = false;
@@ -120,45 +129,88 @@ let orangePressed = false;
 
 document.addEventListener("keydown", (event) => {
   if (!greenPressed && event.key == "a") {
-    console.log(event.key);
+    // console.log(event.key);
     greenPressed = true;
     let btnGreen = document.getElementById("hitnotegreen");
     btnGreen.classList.add("hitnote-pressed");
     let greenNotes = document.getElementsByClassName("note-green");
-    let greenNote = greenNotes[(greenNotes.length - 1)];
-    if (greenNote) console.log(isColliding(btnGreen, greenNote));
+    let greenNote = greenNotes[0];
+    let greenNoteNext = greenNotes[1];
+    let fail = true;
+    if (greenNote) {
+      if (isColliding(btnGreen, greenNote)) {
+        hitNote(greenNote);
+        fail = false;
+      } else if (greenNoteNext) {
+        if (isColliding(btnGreen, greenNoteNext)) {
+          hitNote(greenNoteNext);
+          fail = false;
+        }
+      }
+    }
+    if (fail) {
+      console.log("FAIL");
+    }
   } else if (!redPressed && event.key == "s") {
-    console.log(event.key);
+    // console.log(event.key);
     redPressed = true;
     let btnRed = document.getElementById("hitnotered");
     btnRed.classList.add("hitnote-pressed");
     let redNotes = document.getElementsByClassName("note-red");
-    let redNote = redNotes[(redNotes.length - 1)];
-    if (redNote) console.log(isColliding(btnRed, redNote));
+    let redNote = redNotes[0];
+    let redNoteNext = redNotes[1];
+    if (redNote || redNoteNext) {
+      if (isColliding(btnRed, redNote)) {
+        hitNote(redNote);
+      } else if (isColliding(btnRed, redNoteNext)) {
+        hitNote(redNoteNext);
+      }
+    }
   } else if (!yellowPressed && event.key == "j") {
-    console.log(event.key);
+    // console.log(event.key);
     yellowPressed = true;
     let btnYellow = document.getElementById("hitnoteyellow");
     btnYellow.classList.add("hitnote-pressed");
     let yellowNotes = document.getElementsByClassName("note-yellow");
-    let yellowNote = yellowNotes[(yellowNotes.length - 1)];
-    if (yellowNote) console.log(isColliding(btnYellow, yellowNote));
+    let yellowNote = yellowNotes[0];
+    let yellowNoteNext = yellowNotes[1];
+    if (yellowNote || yellowNoteNext) {
+      if (isColliding(btnYellow, yellowNote)) {
+        hitNote(yellowNote);
+      } else if (isColliding(btnYellow, yellowNoteNext)) {
+        hitNote(yellowNoteNext);
+      }
+    }
   } else if (!bluePressed && event.key == "k") {
-    console.log(event.key);
+    // console.log(event.key);
     bluePressed = true;
     let btnBlue = document.getElementById("hitnoteblue");
     btnBlue.classList.add("hitnote-pressed");
     let blueNotes = document.getElementsByClassName("note-blue");
-    let blueNote = blueNotes[(blueNotes.length - 1)];
-    if (blueNote) console.log(isColliding(btnBlue, blueNote));
+    let blueNote = blueNotes[0];
+    let blueNoteNext = blueNotes[1];
+    if (blueNote || blueNoteNext) {
+      if (isColliding(btnBlue, blueNote)) {
+        hitNote(blueNote);
+      } else if (isColliding(btnBlue, blueNoteNext)) {
+        hitNote(blueNoteNext);
+      }
+    }
   } else if (!orangePressed && event.key == "l") {
-    console.log(event.key);
+    // console.log(event.key);
     orangePressed = true;
     let btnOrange = document.getElementById("hitnoteorange");
     btnOrange.classList.add("hitnote-pressed");
     let orangeNotes = document.getElementsByClassName("note-orange");
-    let orangeNote = orangeNotes[(orangeNotes.length - 1)];
-    if (orangeNote) console.log(isColliding(btnOrange, orangeNote));
+    let orangeNote = orangeNotes[0];
+    let orangeNoteNext = orangeNotes[1];
+    if (orangeNote || orangeNoteNext) {
+      if (isColliding(btnOrange, orangeNote)) {
+        hitNote(orangeNote);
+      } else if (isColliding(btnOrange, orangeNoteNext)) {
+        hitNote(orangeNoteNext);
+      }
+    }
   } else if (event.key == "q") {
     generateNote(0);
   } else if (event.key == "w") {
@@ -174,27 +226,27 @@ document.addEventListener("keydown", (event) => {
 
 document.addEventListener("keyup", (event) => {
   if (event.key == "a") {
-    console.log(event.key);
+    // console.log(event.key);
     let btnGreen = document.getElementById("hitnotegreen");
     btnGreen.classList.remove("hitnote-pressed");
     greenPressed = false;
   } else if (event.key == "s") {
-    console.log(event.key);
+    // console.log(event.key);
     let btnRed = document.getElementById("hitnotered");
     btnRed.classList.remove("hitnote-pressed");
     redPressed = false;
   } else if (event.key == "j") {
-    console.log(event.key);
+    // console.log(event.key);
     let btnYellow = document.getElementById("hitnoteyellow");
     btnYellow.classList.remove("hitnote-pressed");
     yellowPressed = false;
   } else if (event.key == "k") {
-    console.log(event.key);
+    // console.log(event.key);
     let btnBlue = document.getElementById("hitnoteblue");
     btnBlue.classList.remove("hitnote-pressed");
     bluePressed = false;
   } else if (event.key == "l") {
-    console.log(event.key);
+    // console.log(event.key);
     let btnOrange = document.getElementById("hitnoteorange");
     btnOrange.classList.remove("hitnote-pressed");
     orangePressed = false;
