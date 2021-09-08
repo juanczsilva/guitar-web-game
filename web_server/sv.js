@@ -1,6 +1,6 @@
-const http = require("http");
-const express = require("express");
-const socketio = require("socket.io");
+const http = require('http');
+const express = require('express');
+const socketio = require('socket.io');
 
 const app = express();
 
@@ -13,15 +13,15 @@ const port = 8080;
 
 const io = socketio(server);
 
-io.on("connection", (sock) => {
-    console.log(`\n\u001b[37m* New connection: ${sock.id}`);
-    sock.emit("msg", "JELOU CL");
+io.on('connection', (sock) => {
+  console.log(`\n\u001b[37m* New connection: ${sock.id}`);
+  sock.emit('msg', 'JELOU CL');
 });
 
-server.on("error", (err) => {
-    console.log(`Error: ${err.name} - ${err.message}`);
+server.on('error', (err) => {
+  console.log(`Error: ${err.name} - ${err.message}`);
 });
 
 server.listen(port, () => {
-    console.log(`\u001b[33m* Server started on port: ${port}`);
+  console.log(`\u001b[33m* Server started on port: ${port}`);
 });

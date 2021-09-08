@@ -1,124 +1,174 @@
-// YOUTUBE
-let tag = document.createElement('script');
-tag.src = "http://www.youtube.com/player_api";
+// *** YOUTUBE ***
+const tag = document.createElement('script');
+tag.src = 'http://www.youtube.com/player_api';
 
-let firstScriptTag = document.getElementsByTagName('script')[0];
+const firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 let player;
 
+function onPlayerStateChange(event) {
+  console.log(event);
+  // eslint-disable-next-line no-undef
+  if (event.data == YT.PlayerState.PLAYING) {
+    player.unMute();
+    // document.getElementById("topbot").style.height = "60px";
+  // eslint-disable-next-line no-undef
+  } else if (event.data == YT.PlayerState.PAUSED) {
+    // document.getElementById("topbot").style.height = "170px";
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
 function onYouTubeIframeAPIReady() {
+  // eslint-disable-next-line no-undef
   player = new YT.Player('player', {
     events: {
-      'onStateChange': onPlayerStateChange
+      onStateChange: onPlayerStateChange
     }
   });
 }
 
-function onPlayerStateChange(event) {
-  console.log(event);
-  if (event.data == YT.PlayerState.PLAYING) {
-    player.unMute();
-    //document.getElementById("topbot").style.height = "60px";
-  } else if (event.data == YT.PlayerState.PAUSED) {
-    //document.getElementById("topbot").style.height = "170px";
-  }
-}
-
-// GAME
+// *** GAME ***
+// eslint-disable-next-line no-undef
 const sock = io();
 
-sock.on("msg", (text) => {
+sock.on('msg', (text) => {
   console.log(text);
-  document.getElementById("topbot").innerHTML = text;
+  document.getElementById('topbot').innerHTML = text;
 });
 
 function elementAnimate(item, type) {
-  let noteLeftStart = "";
-  let noteLeftEnd = "";
+  let noteLeftStart = '';
+  let noteLeftEnd = '';
   switch (type) {
     case 0:
-      noteLeftStart = "20%";
-      noteLeftEnd = "-50%";
-    break;
+      noteLeftStart = '20%';
+      noteLeftEnd = '-50%';
+      break;
     case 1:
-      noteLeftStart = "32.5%";
-      noteLeftEnd = "-7.5%";
-    break;
+      noteLeftStart = '32.5%';
+      noteLeftEnd = '-7.5%';
+      break;
     case 2:
-      noteLeftStart = "45%";
-      noteLeftEnd = "35%";
-    break;
+      noteLeftStart = '45%';
+      noteLeftEnd = '35%';
+      break;
     case 3:
-      noteLeftStart = "57.5%";
-      noteLeftEnd = "77.5%";
-    break;
+      noteLeftStart = '57.5%';
+      noteLeftEnd = '77.5%';
+      break;
     case 4:
-      noteLeftStart = "70%";
-      noteLeftEnd = "120%";
-    break;
+      noteLeftStart = '70%';
+      noteLeftEnd = '120%';
+      break;
+    default:
+      break;
   }
   item.animate([
-    { top: "25%", left: noteLeftStart },
-    { top: "125%", left: noteLeftEnd, width: "30%" }
+    { top: '25%', left: noteLeftStart },
+    { top: '125%', left: noteLeftEnd, width: '30%' }
   ], {
     duration: 3000,
     easing: 'linear',
     iterations: 1,
     direction: 'normal',
     fill: 'forwards'
-  }).onfinish = function() {
+  }).onfinish = () => {
     item.remove();
   };
 }
 
 function generateNote(type) {
-  let neck = document.getElementById("neck");
-  let note = document.createElement("div"); 
+  const neck = document.getElementById('neck');
+  const note = document.createElement('div');
   switch (type) {
     case 0:
-      note.className = "note note-green";
-    break;
+      note.className = 'note note-green';
+      break;
     case 1:
-      note.className = "note note-red";
-    break;
+      note.className = 'note note-red';
+      break;
     case 2:
-      note.className = "note note-yellow";
-    break;
+      note.className = 'note note-yellow';
+      break;
     case 3:
-      note.className = "note note-blue";
-    break;
+      note.className = 'note note-blue';
+      break;
     case 4:
-      note.className = "note note-orange";
-    break;
+      note.className = 'note note-orange';
+      break;
+    default:
+      break;
   }
   neck.appendChild(note);
   elementAnimate(note, type);
 }
 
 function isColliding(div1, div2) {
-  let d1OffsetTop = div1.offsetTop;
-  let d1OffsetLeft = div1.offsetLeft;
-  let d1Height = div1.getBoundingClientRect().height;
-  let d1Width = div1.getBoundingClientRect().width;
-  let d1Top = d1OffsetTop + d1Height;
-  let d1Left = d1OffsetLeft + d1Width;
-  let d2OffsetTop = div2.offsetTop;
-  let d2OffsetLeft = div2.offsetLeft;
-  let d2Height = div2.getBoundingClientRect().height;
-  let d2Width = div2.getBoundingClientRect().width;
-  let d2Top = d2OffsetTop + d2Height;
-  let d2Left = d2OffsetLeft + d2Width;
-  return !(d1Top < d2OffsetTop || d1OffsetTop > d2Top || d1Left < d2OffsetLeft || d1OffsetLeft > d2Left);
+  const d1OffsetTop = div1.offsetTop;
+  const d1OffsetLeft = div1.offsetLeft;
+  const d1Height = div1.getBoundingClientRect().height;
+  const d1Width = div1.getBoundingClientRect().width;
+  const d1Top = d1OffsetTop + d1Height;
+  const d1Left = d1OffsetLeft + d1Width;
+  const d2OffsetTop = div2.offsetTop;
+  const d2OffsetLeft = div2.offsetLeft;
+  const d2Height = div2.getBoundingClientRect().height;
+  const d2Width = div2.getBoundingClientRect().width;
+  const d2Top = d2OffsetTop + d2Height;
+  const d2Left = d2OffsetLeft + d2Width;
+  return !(d1Top < d2OffsetTop || d1OffsetTop > d2Top
+    || d1Left < d2OffsetLeft || d1OffsetLeft > d2Left);
 }
 
 let score = 0;
+const flameTime = 400;
+let flameGreenTimer;
+let flameRedTimer;
+let flameYellowTimer;
+let flameBlueTimer;
+let flameOrangeTimer;
 
-function hitNote(note) {
+function hitNote(note, type) {
   note.remove();
-  //fuego
+  let flame;
+  switch (type) {
+    case 0:
+      clearTimeout(flameGreenTimer);
+      flame = document.getElementById('flame-hit-green');
+      flame.style.opacity = 1;
+      flameGreenTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      break;
+    case 1:
+      clearTimeout(flameRedTimer);
+      flame = document.getElementById('flame-hit-red');
+      flame.style.opacity = 1;
+      flameRedTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      break;
+    case 2:
+      clearTimeout(flameYellowTimer);
+      flame = document.getElementById('flame-hit-yellow');
+      flame.style.opacity = 1;
+      flameYellowTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      break;
+    case 3:
+      clearTimeout(flameBlueTimer);
+      flame = document.getElementById('flame-hit-blue');
+      flame.style.opacity = 1;
+      flameBlueTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      break;
+    case 4:
+      clearTimeout(flameOrangeTimer);
+      flame = document.getElementById('flame-hit-orange');
+      flame.style.opacity = 1;
+      flameOrangeTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      break;
+    default:
+      break;
+  }
   score += 100;
-  document.getElementById("topbot").innerHTML = ("SCORE: " + score);
+  document.getElementById('topbot').innerHTML = (`SCORE: ${score}`);
 }
 
 let greenPressed = false;
@@ -127,128 +177,160 @@ let yellowPressed = false;
 let bluePressed = false;
 let orangePressed = false;
 
-document.addEventListener("keydown", (event) => {
-  if (!greenPressed && event.key == "a") {
+document.addEventListener('keydown', (event) => {
+  if (!greenPressed && event.key == 'a') {
     // console.log(event.key);
     greenPressed = true;
-    let btnGreen = document.getElementById("hitnotegreen");
-    btnGreen.classList.add("hitnote-pressed");
-    let greenNotes = document.getElementsByClassName("note-green");
-    let greenNote = greenNotes[0];
-    let greenNoteNext = greenNotes[1];
+    const btnGreen = document.getElementById('hitnotegreen');
+    btnGreen.classList.add('hitnote-pressed');
+    const greenNotes = document.getElementsByClassName('note-green');
+    const greenNote = greenNotes[0];
+    const greenNoteNext = greenNotes[1];
     let fail = true;
     if (greenNote) {
       if (isColliding(btnGreen, greenNote)) {
-        hitNote(greenNote);
+        hitNote(greenNote, 0);
         fail = false;
       } else if (greenNoteNext) {
         if (isColliding(btnGreen, greenNoteNext)) {
-          hitNote(greenNoteNext);
+          hitNote(greenNoteNext, 0);
           fail = false;
         }
       }
     }
     if (fail) {
-      console.log("FAIL");
+      console.log('FAIL');
     }
-  } else if (!redPressed && event.key == "s") {
+  } else if (!redPressed && event.key == 's') {
     // console.log(event.key);
     redPressed = true;
-    let btnRed = document.getElementById("hitnotered");
-    btnRed.classList.add("hitnote-pressed");
-    let redNotes = document.getElementsByClassName("note-red");
-    let redNote = redNotes[0];
-    let redNoteNext = redNotes[1];
-    if (redNote || redNoteNext) {
+    const btnRed = document.getElementById('hitnotered');
+    btnRed.classList.add('hitnote-pressed');
+    const redNotes = document.getElementsByClassName('note-red');
+    const redNote = redNotes[0];
+    const redNoteNext = redNotes[1];
+    let fail = true;
+    if (redNote) {
       if (isColliding(btnRed, redNote)) {
-        hitNote(redNote);
-      } else if (isColliding(btnRed, redNoteNext)) {
-        hitNote(redNoteNext);
+        hitNote(redNote, 1);
+        fail = false;
+      } else if (redNoteNext) {
+        if (isColliding(btnRed, redNoteNext)) {
+          hitNote(redNoteNext, 1);
+          fail = false;
+        }
       }
     }
-  } else if (!yellowPressed && event.key == "j") {
+    if (fail) {
+      console.log('FAIL');
+    }
+  } else if (!yellowPressed && event.key == 'j') {
     // console.log(event.key);
     yellowPressed = true;
-    let btnYellow = document.getElementById("hitnoteyellow");
-    btnYellow.classList.add("hitnote-pressed");
-    let yellowNotes = document.getElementsByClassName("note-yellow");
-    let yellowNote = yellowNotes[0];
-    let yellowNoteNext = yellowNotes[1];
-    if (yellowNote || yellowNoteNext) {
+    const btnYellow = document.getElementById('hitnoteyellow');
+    btnYellow.classList.add('hitnote-pressed');
+    const yellowNotes = document.getElementsByClassName('note-yellow');
+    const yellowNote = yellowNotes[0];
+    const yellowNoteNext = yellowNotes[1];
+    let fail = true;
+    if (yellowNote) {
       if (isColliding(btnYellow, yellowNote)) {
-        hitNote(yellowNote);
-      } else if (isColliding(btnYellow, yellowNoteNext)) {
-        hitNote(yellowNoteNext);
+        hitNote(yellowNote, 2);
+        fail = false;
+      } else if (yellowNoteNext) {
+        if (isColliding(btnYellow, yellowNoteNext)) {
+          hitNote(yellowNoteNext, 2);
+          fail = false;
+        }
       }
     }
-  } else if (!bluePressed && event.key == "k") {
+    if (fail) {
+      console.log('FAIL');
+    }
+  } else if (!bluePressed && event.key == 'k') {
     // console.log(event.key);
     bluePressed = true;
-    let btnBlue = document.getElementById("hitnoteblue");
-    btnBlue.classList.add("hitnote-pressed");
-    let blueNotes = document.getElementsByClassName("note-blue");
-    let blueNote = blueNotes[0];
-    let blueNoteNext = blueNotes[1];
-    if (blueNote || blueNoteNext) {
+    const btnBlue = document.getElementById('hitnoteblue');
+    btnBlue.classList.add('hitnote-pressed');
+    const blueNotes = document.getElementsByClassName('note-blue');
+    const blueNote = blueNotes[0];
+    const blueNoteNext = blueNotes[1];
+    let fail = true;
+    if (blueNote) {
       if (isColliding(btnBlue, blueNote)) {
-        hitNote(blueNote);
-      } else if (isColliding(btnBlue, blueNoteNext)) {
-        hitNote(blueNoteNext);
+        hitNote(blueNote, 3);
+        fail = false;
+      } else if (blueNoteNext) {
+        if (isColliding(btnBlue, blueNoteNext)) {
+          hitNote(blueNoteNext, 3);
+          fail = false;
+        }
       }
     }
-  } else if (!orangePressed && event.key == "l") {
+    if (fail) {
+      console.log('FAIL');
+    }
+  } else if (!orangePressed && event.key == 'l') {
     // console.log(event.key);
     orangePressed = true;
-    let btnOrange = document.getElementById("hitnoteorange");
-    btnOrange.classList.add("hitnote-pressed");
-    let orangeNotes = document.getElementsByClassName("note-orange");
-    let orangeNote = orangeNotes[0];
-    let orangeNoteNext = orangeNotes[1];
-    if (orangeNote || orangeNoteNext) {
+    const btnOrange = document.getElementById('hitnoteorange');
+    btnOrange.classList.add('hitnote-pressed');
+    const orangeNotes = document.getElementsByClassName('note-orange');
+    const orangeNote = orangeNotes[0];
+    const orangeNoteNext = orangeNotes[1];
+    let fail = true;
+    if (orangeNote) {
       if (isColliding(btnOrange, orangeNote)) {
-        hitNote(orangeNote);
-      } else if (isColliding(btnOrange, orangeNoteNext)) {
-        hitNote(orangeNoteNext);
+        hitNote(orangeNote, 4);
+        fail = false;
+      } else if (orangeNoteNext) {
+        if (isColliding(btnOrange, orangeNoteNext)) {
+          hitNote(orangeNoteNext, 4);
+          fail = false;
+        }
       }
     }
-  } else if (event.key == "q") {
+    if (fail) {
+      console.log('FAIL');
+    }
+  } else if (event.key == 'q') {
     generateNote(0);
-  } else if (event.key == "w") {
+  } else if (event.key == 'w') {
     generateNote(1);
-  } else if (event.key == "u") {
+  } else if (event.key == 'u') {
     generateNote(2);
-  } else if (event.key == "i") {
+  } else if (event.key == 'i') {
     generateNote(3);
-  } else if (event.key == "o") {
+  } else if (event.key == 'o') {
     generateNote(4);
   }
 });
 
-document.addEventListener("keyup", (event) => {
-  if (event.key == "a") {
+document.addEventListener('keyup', (event) => {
+  if (event.key == 'a') {
     // console.log(event.key);
-    let btnGreen = document.getElementById("hitnotegreen");
-    btnGreen.classList.remove("hitnote-pressed");
+    const btnGreen = document.getElementById('hitnotegreen');
+    btnGreen.classList.remove('hitnote-pressed');
     greenPressed = false;
-  } else if (event.key == "s") {
+  } else if (event.key == 's') {
     // console.log(event.key);
-    let btnRed = document.getElementById("hitnotered");
-    btnRed.classList.remove("hitnote-pressed");
+    const btnRed = document.getElementById('hitnotered');
+    btnRed.classList.remove('hitnote-pressed');
     redPressed = false;
-  } else if (event.key == "j") {
+  } else if (event.key == 'j') {
     // console.log(event.key);
-    let btnYellow = document.getElementById("hitnoteyellow");
-    btnYellow.classList.remove("hitnote-pressed");
+    const btnYellow = document.getElementById('hitnoteyellow');
+    btnYellow.classList.remove('hitnote-pressed');
     yellowPressed = false;
-  } else if (event.key == "k") {
+  } else if (event.key == 'k') {
     // console.log(event.key);
-    let btnBlue = document.getElementById("hitnoteblue");
-    btnBlue.classList.remove("hitnote-pressed");
+    const btnBlue = document.getElementById('hitnoteblue');
+    btnBlue.classList.remove('hitnote-pressed');
     bluePressed = false;
-  } else if (event.key == "l") {
+  } else if (event.key == 'l') {
     // console.log(event.key);
-    let btnOrange = document.getElementById("hitnoteorange");
-    btnOrange.classList.remove("hitnote-pressed");
+    const btnOrange = document.getElementById('hitnoteorange');
+    btnOrange.classList.remove('hitnote-pressed');
     orangePressed = false;
   }
 });
