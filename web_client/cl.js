@@ -334,3 +334,10 @@ document.addEventListener('keyup', (event) => {
     orangePressed = false;
   }
 });
+
+// eslint-disable-next-line no-unused-vars
+function wea() {
+  fetch('/test')
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+}

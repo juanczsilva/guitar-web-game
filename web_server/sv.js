@@ -1,6 +1,8 @@
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
+const { Midi } = require('@tonejs/midi');
+const fs = require('fs');
 
 const app = express();
 
@@ -24,4 +26,11 @@ server.on('error', (err) => {
 
 server.listen(port, () => {
   console.log(`\u001b[33m* Server started on port: ${port}`);
+});
+
+app.get('/test', (req, res) => {
+  const midiData = fs.readFileSync('./web_server/mid/notes.mid');
+  const midi = new Midi(midiData);
+  console.log(JSON.stringify(midi));
+  res.send(midi);
 });
