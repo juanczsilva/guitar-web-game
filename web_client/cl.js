@@ -69,7 +69,7 @@ function elementAnimate(item, type) {
     { top: '25%', left: noteLeftStart },
     { top: '125%', left: noteLeftEnd, width: '30%' }
   ], {
-    duration: 3000,
+    duration: 2000,
     easing: 'linear',
     iterations: 1,
     direction: 'normal',
@@ -77,6 +77,30 @@ function elementAnimate(item, type) {
   }).onfinish = () => {
     item.remove();
   };
+}
+
+function getNoteIdByName(name) {
+  let id = 0;
+  switch (name) {
+    case 'C7':
+      id = 0;
+      break;
+    case 'C#7':
+      id = 1;
+      break;
+    case 'D7':
+      id = 2;
+      break;
+    case 'D#7':
+      id = 3;
+      break;
+    case 'E7':
+      id = 4;
+      break;
+    default:
+      break;
+  }
+  return id;
 }
 
 function generateNote(type) {
@@ -335,9 +359,74 @@ document.addEventListener('keyup', (event) => {
   }
 });
 
+let start = null;
+let midiSec = 0;
+let ticksPerSec = 0;
+let ticks = 0;
+let endOfTrackTicks = 0;
+let notes = [];
+let notePos = 0;
+
 // eslint-disable-next-line no-unused-vars
 function wea() {
   fetch('/test')
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => {
+      console.log(data);
+      setupLoop(data);
+    });
+}
+
+function setupLoop(midiData) {
+  const bpm = midiData.header.tempos[0].bpm;
+  const ppq = midiData.header.ppq;
+  midiSec = ((60000 / (bpm * ppq)) / 60);
+  ticksPerSec = (((bpm * ppq) / 60) / 60);
+  endOfTrackTicks = midiData.tracks[0].endOfTrackTicks;
+  notes = midiData.tracks[0].notes;
+  const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame
+    || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+  window.requestAnimationFrame = requestAnimationFrame;
+  window.requestAnimationFrame(step);
+}
+
+function step(timestamp) {
+  if (!start) start = timestamp;
+  const progress = (timestamp - start);
+  // console.log(progress);
+  if (progress >= midiSec) {
+    ticks += ticksPerSec;
+    console.log(`TICK Nº: ${ticks}`);
+    start = timestamp;
+    if (ticks >= endOfTrackTicks) {
+      console.log('TERMINO LA CANCION XDXDXD');
+    } else {
+      if (notes[notePos] && ticks >= notes[notePos].ticks) {
+        let moreNotes = 0;
+        if (notes[notePos + 1] && notes[notePos].ticks == notes[notePos + 1].ticks) {
+          generateNote(getNoteIdByName(notes[notePos + 1].name));
+          moreNotes += 1;
+        }
+        if (notes[notePos + 2] && notes[notePos].ticks == notes[notePos + 2].ticks) {
+          generateNote(getNoteIdByName(notes[notePos + 2].name));
+          moreNotes += 1;
+        }
+        if (notes[notePos + 3] && notes[notePos].ticks == notes[notePos + 3].ticks) {
+          generateNote(getNoteIdByName(notes[notePos + 3].name));
+          moreNotes += 1;
+        }
+        if (notes[notePos + 4] && notes[notePos].ticks == notes[notePos + 4].ticks) {
+          generateNote(getNoteIdByName(notes[notePos + 4].name));
+          moreNotes += 1;
+        }
+        generateNote(getNoteIdByName(notes[notePos].name));
+        notePos += (1 + moreNotes);
+        window.requestAnimationFrame(step);
+      } else {
+        window.requestAnimationFrame(step);
+      }
+    }
+  } else {
+    window.requestAnimationFrame(step);
+  }
 }

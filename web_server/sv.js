@@ -31,6 +31,6 @@ server.listen(port, () => {
 app.get('/test', (req, res) => {
   const midiData = fs.readFileSync('./web_server/mid/notes.mid');
   const midi = new Midi(midiData);
-  console.log(JSON.stringify(midi));
+  // console.log(JSON.stringify(midi));
   res.send(midi);
 });
