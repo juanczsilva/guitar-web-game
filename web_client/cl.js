@@ -8,10 +8,12 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 let player;
 
 function onPlayerStateChange(event) {
-  console.log(event);
+  // console.log(event);
   // eslint-disable-next-line no-undef
   if (event.data == YT.PlayerState.PLAYING) {
-    player.unMute();
+    // player.unMute();
+    player.mute();
+    wea();
     // document.getElementById("topbot").style.height = "60px";
   // eslint-disable-next-line no-undef
   } else if (event.data == YT.PlayerState.PAUSED) {
@@ -34,7 +36,7 @@ function onYouTubeIframeAPIReady() {
 const sock = io();
 
 sock.on('msg', (text) => {
-  console.log(text);
+  // console.log(text);
   document.getElementById('topbot').innerHTML = text;
 });
 
@@ -69,7 +71,7 @@ function elementAnimate(item, type) {
     { top: '25%', left: noteLeftStart },
     { top: '125%', left: noteLeftEnd, width: '30%' }
   ], {
-    duration: 2000,
+    duration: 1500,
     easing: 'linear',
     iterations: 1,
     direction: 'normal',
@@ -223,7 +225,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      console.log('FAIL');
+      // console.log('FAIL');
     }
   } else if (!redPressed && event.key == 's') {
     // console.log(event.key);
@@ -246,7 +248,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      console.log('FAIL');
+      // console.log('FAIL');
     }
   } else if (!yellowPressed && event.key == 'j') {
     // console.log(event.key);
@@ -269,7 +271,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      console.log('FAIL');
+      // console.log('FAIL');
     }
   } else if (!bluePressed && event.key == 'k') {
     // console.log(event.key);
@@ -292,7 +294,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      console.log('FAIL');
+      // console.log('FAIL');
     }
   } else if (!orangePressed && event.key == 'l') {
     // console.log(event.key);
@@ -315,7 +317,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      console.log('FAIL');
+      // console.log('FAIL');
     }
   } else if (event.key == 'q') {
     generateNote(0);
@@ -366,24 +368,32 @@ let ticks = 0;
 let endOfTrackTicks = 0;
 let notes = [];
 let notePos = 0;
+let tempos = [];
+let tempoPos = 1;
+let bpm = 0;
+let ppq = 0;
 
 // eslint-disable-next-line no-unused-vars
 function wea() {
   fetch('/test')
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
-      setupLoop(data);
+      // console.log(data);
+      document.getElementById('media').play();
+      setTimeout(() => {
+        setupLoop(data);
+      }, 1500);
     });
 }
 
 function setupLoop(midiData) {
-  const bpm = midiData.header.tempos[0].bpm;
-  const ppq = midiData.header.ppq;
+  bpm = midiData.header.tempos[0].bpm;
+  ppq = midiData.header.ppq;
   midiSec = ((60000 / (bpm * ppq)) / 60);
   ticksPerSec = (((bpm * ppq) / 60) / 60);
   endOfTrackTicks = midiData.tracks[0].endOfTrackTicks;
   notes = midiData.tracks[0].notes;
+  tempos = midiData.header.tempos;
   const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame
     || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
   window.requestAnimationFrame = requestAnimationFrame;
@@ -396,10 +406,17 @@ function step(timestamp) {
   // console.log(progress);
   if (progress >= midiSec) {
     ticks += ticksPerSec;
-    console.log(`TICK Nº: ${ticks}`);
+    // console.log(`TICK Nº: ${ticks}`);
+    if (tempos[tempoPos] && ticks >= tempos[tempoPos].ticks) {
+      bpm = tempos[tempoPos].bpm;
+      midiSec = ((60000 / (bpm * ppq)) / 60);
+      ticksPerSec = (((bpm * ppq) / 60) / 60);
+      tempoPos += 1;
+    }
     start = timestamp;
     if (ticks >= endOfTrackTicks) {
-      console.log('TERMINO LA CANCION XDXDXD');
+      // console.log('TERMINO LA CANCION XDXDXD');
+      player.stopVideo();
     } else {
       if (notes[notePos] && ticks >= notes[notePos].ticks) {
         let moreNotes = 0;
