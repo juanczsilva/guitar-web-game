@@ -29,8 +29,8 @@ server.listen(port, () => {
 });
 
 app.get('/test', (req, res) => {
-  const midiData = fs.readFileSync('./web_server/mid/bitrush.mid');
+  const id = 1;
+  const midiData = fs.readFileSync(`./web_server/songs/song${id}/notes.mid`);
   const midi = new Midi(midiData);
-  // console.log(JSON.stringify(midi));
   res.send(midi);
 });

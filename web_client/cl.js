@@ -6,14 +6,24 @@ const firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 let player;
+let playerInit = false;
 
 function onPlayerStateChange(event) {
   // console.log(event);
   // eslint-disable-next-line no-undef
   if (event.data == YT.PlayerState.PLAYING) {
-    // player.unMute();
-    player.mute();
-    wea();
+    // player.mute();
+    if (!playerInit) {
+      playerInit = true;
+      player.stopVideo();
+      player.unMute();
+      player.setVolume(100);
+      setupLoop(midiData);
+      setTimeout(() => {
+        player.seekTo(0);
+        // player.playVideo();
+      }, 500);
+    }
     // document.getElementById("topbot").style.height = "60px";
   // eslint-disable-next-line no-undef
   } else if (event.data == YT.PlayerState.PAUSED) {
@@ -373,20 +383,18 @@ let tempoPos = 1;
 let bpm = 0;
 let ppq = 0;
 
-// eslint-disable-next-line no-unused-vars
-function wea() {
+let midiData = null;
+
+function loadMidiData() {
   fetch('/test')
     .then((response) => response.json())
     .then((data) => {
-      // console.log(data);
-      document.getElementById('media').play();
-      setTimeout(() => {
-        setupLoop(data);
-      }, 1500);
+      midiData = data;
+      // console.log('midiData Ready');
     });
 }
 
-function setupLoop(midiData) {
+function setupLoop() {
   bpm = midiData.header.tempos[0].bpm;
   ppq = midiData.header.ppq;
   midiSec = ((60000 / (bpm * ppq)) / 60);
@@ -447,3 +455,5 @@ function step(timestamp) {
     window.requestAnimationFrame(step);
   }
 }
+
+loadMidiData();
