@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const playerEle = document.getElementById('player');
   playerEle.setAttribute('src', 'http://www.youtube.com/embed/'
-    + 'MuCy9jIyWw4'
+    + 'SJLe1UTqKvA' // MuCy9jIyWw4
     + '?enablejsapi=1'
     + `&origin=${window.location.origin}`
     + '&start=0'
@@ -43,14 +43,14 @@ function onPlayerStateChange(event) {
     // player.mute();
     if (!playerInit) {
       playerInit = true;
-      player.stopVideo();
+      // player.stopVideo();
       player.unMute();
       player.setVolume(100);
-      iniLoop();
       setTimeout(() => {
-        player.seekTo(0);
+        // player.seekTo(10);
         // player.playVideo();
-      }, 500);
+        iniLoop();
+      }, 5800);
     }
     // document.getElementById("topbot").style.height = "60px";
   // eslint-disable-next-line no-undef
@@ -107,6 +107,10 @@ function elementAnimate(item, type) {
   }).onfinish = () => {
     item.remove();
   };
+}
+
+function isValidNote(name) {
+  return name == 'C7' || name == 'C#7' || name == 'D7' || name == 'D#7' || name == 'E7';
 }
 
 function getNoteIdByName(name) {
@@ -415,8 +419,9 @@ function setupLoop(midiData, cb) {
   ppq = midiData.header.ppq;
   midiSec = ((60000 / (bpm * ppq)) / 60);
   ticksPerSec = (((bpm * ppq) / 60) / 60);
-  endOfTrackTicks = midiData.tracks[0].endOfTrackTicks;
-  notes = (midiData.tracks).find((track) => (track.name).toUpperCase().includes('GUITAR')).notes;
+  const track = (midiData.tracks).find((t) => (t.name).toUpperCase().includes('GUITAR'));
+  endOfTrackTicks = track.endOfTrackTicks;
+  notes = track.notes.filter((n) => n.name == 'C7' || n.name == 'C#7' || n.name == 'D7' || n.name == 'D#7' || n.name == 'E7');
   tempos = midiData.header.tempos;
   cb('loaded');
 }
@@ -447,21 +452,21 @@ function step(timestamp) {
       // console.log('TERMINO LA CANCION XDXDXD');
       player.stopVideo();
     } else {
-      if (notes[notePos] && ticks >= notes[notePos].ticks) {
+      if (notes[notePos] && isValidNote(notes[notePos].name) && ticks >= notes[notePos].ticks) {
         let moreNotes = 0;
-        if (notes[notePos + 1] && notes[notePos].ticks == notes[notePos + 1].ticks) {
+        if (notes[notePos + 1] && isValidNote(notes[notePos + 1].name) && notes[notePos].ticks == notes[notePos + 1].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 1].name));
           moreNotes += 1;
         }
-        if (notes[notePos + 2] && notes[notePos].ticks == notes[notePos + 2].ticks) {
+        if (notes[notePos + 2] && isValidNote(notes[notePos + 2].name) && notes[notePos].ticks == notes[notePos + 2].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 2].name));
           moreNotes += 1;
         }
-        if (notes[notePos + 3] && notes[notePos].ticks == notes[notePos + 3].ticks) {
+        if (notes[notePos + 3] && isValidNote(notes[notePos + 3].name) && notes[notePos].ticks == notes[notePos + 3].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 3].name));
           moreNotes += 1;
         }
-        if (notes[notePos + 4] && notes[notePos].ticks == notes[notePos + 4].ticks) {
+        if (notes[notePos + 4] && isValidNote(notes[notePos + 4].name) && notes[notePos].ticks == notes[notePos + 4].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 4].name));
           moreNotes += 1;
         }

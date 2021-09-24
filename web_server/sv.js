@@ -29,7 +29,7 @@ server.listen(port, () => {
 });
 
 app.get('/test', (req, res) => {
-  const id = 1;
+  const id = 2;
   const midiData = fs.readFileSync(`./web_server/songs/song${id}/notes.mid`);
   const midi = new Midi(midiData);
   res.send(midi);
