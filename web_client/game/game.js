@@ -1,12 +1,40 @@
 // *** YOUTUBE ***
-const tag = document.createElement('script');
-tag.src = 'http://www.youtube.com/player_api';
-
-const firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+document.addEventListener('DOMContentLoaded', () => {
+  const playerEle = document.getElementById('player');
+  playerEle.setAttribute('src', 'http://www.youtube.com/embed/'
+    + 'MuCy9jIyWw4'
+    + '?enablejsapi=1'
+    + `&origin=${window.location.origin}`
+    + '&start=0'
+    + '&autoplay=0'
+    + '&controls=0'
+    + '&showinfo=0'
+    + '&rel=0'
+    + '&widgetid=1');
+  loadMidiData(() => {
+    // console.log(cb);
+    setTimeout(() => {
+      const tag = document.createElement('script');
+      tag.src = 'http://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }, 3000);
+  });
+});
 
 let player;
 let playerInit = false;
+// eslint-disable-next-line no-unused-vars
+function onYouTubeIframeAPIReady() {
+  // console.log('onYouTubeIframeAPIReady');
+  document.getElementById('loader').style.display = 'none';
+  // eslint-disable-next-line no-undef
+  player = new YT.Player('player', {
+    events: {
+      onStateChange: onPlayerStateChange
+    }
+  });
+}
 
 function onPlayerStateChange(event) {
   // console.log(event);
@@ -18,7 +46,7 @@ function onPlayerStateChange(event) {
       player.stopVideo();
       player.unMute();
       player.setVolume(100);
-      setupLoop(midiData);
+      iniLoop();
       setTimeout(() => {
         player.seekTo(0);
         // player.playVideo();
@@ -29,16 +57,6 @@ function onPlayerStateChange(event) {
   } else if (event.data == YT.PlayerState.PAUSED) {
     // document.getElementById("topbot").style.height = "170px";
   }
-}
-
-// eslint-disable-next-line no-unused-vars
-function onYouTubeIframeAPIReady() {
-  // eslint-disable-next-line no-undef
-  player = new YT.Player('player', {
-    events: {
-      onStateChange: onPlayerStateChange
-    }
-  });
 }
 
 // *** GAME ***
@@ -173,31 +191,31 @@ function hitNote(note, type) {
     case 0:
       clearTimeout(flameGreenTimer);
       flame = document.getElementById('flame-hit-green');
-      flame.style.opacity = 1;
+      flame.style.opacity = 0.5;
       flameGreenTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 1:
       clearTimeout(flameRedTimer);
       flame = document.getElementById('flame-hit-red');
-      flame.style.opacity = 1;
+      flame.style.opacity = 0.5;
       flameRedTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 2:
       clearTimeout(flameYellowTimer);
       flame = document.getElementById('flame-hit-yellow');
-      flame.style.opacity = 1;
+      flame.style.opacity = 0.5;
       flameYellowTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 3:
       clearTimeout(flameBlueTimer);
       flame = document.getElementById('flame-hit-blue');
-      flame.style.opacity = 1;
+      flame.style.opacity = 0.5;
       flameBlueTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 4:
       clearTimeout(flameOrangeTimer);
       flame = document.getElementById('flame-hit-orange');
-      flame.style.opacity = 1;
+      flame.style.opacity = 0.5;
       flameOrangeTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     default:
@@ -383,25 +401,28 @@ let tempoPos = 1;
 let bpm = 0;
 let ppq = 0;
 
-let midiData = null;
-
-function loadMidiData() {
+function loadMidiData(cb) {
   fetch('/test')
     .then((response) => response.json())
     .then((data) => {
-      midiData = data;
-      // console.log('midiData Ready');
+      // console.log(data);
+      setupLoop(data, cb);
     });
 }
 
-function setupLoop() {
+function setupLoop(midiData, cb) {
   bpm = midiData.header.tempos[0].bpm;
   ppq = midiData.header.ppq;
   midiSec = ((60000 / (bpm * ppq)) / 60);
   ticksPerSec = (((bpm * ppq) / 60) / 60);
   endOfTrackTicks = midiData.tracks[0].endOfTrackTicks;
-  notes = midiData.tracks[0].notes;
+  notes = (midiData.tracks).find((track) => (track.name).toUpperCase().includes('GUITAR')).notes;
   tempos = midiData.header.tempos;
+  cb('loaded');
+}
+
+function iniLoop() {
+  // console.log('iniLoop');
   const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame
     || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
   window.requestAnimationFrame = requestAnimationFrame;
@@ -455,5 +476,3 @@ function step(timestamp) {
     window.requestAnimationFrame(step);
   }
 }
-
-loadMidiData();
