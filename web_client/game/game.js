@@ -1,8 +1,8 @@
-// *** YOUTUBE ***
-document.addEventListener('DOMContentLoaded', () => {
+// eslint-disable-next-line no-unused-vars
+function startSong(youtubeId, songId) {
   const playerEle = document.getElementById('player');
   playerEle.setAttribute('src', 'http://www.youtube.com/embed/'
-    + 'SJLe1UTqKvA' // MuCy9jIyWw4
+    + `${youtubeId}` // lithium SJLe1UTqKvA // arcade MuCy9jIyWw4
     + '?enablejsapi=1'
     + `&origin=${window.location.origin}`
     + '&start=0'
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     + '&showinfo=0'
     + '&rel=0'
     + '&widgetid=1');
-  loadMidiData(() => {
+  loadMidiData(songId, () => {
     // console.log(cb);
     setTimeout(() => {
       const tag = document.createElement('script');
@@ -20,8 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }, 3000);
   });
-});
+}
 
+// *** YOUTUBE ***
 let player;
 let playerInit = false;
 // eslint-disable-next-line no-unused-vars
@@ -109,9 +110,9 @@ function elementAnimate(item, type) {
   };
 }
 
-function isValidNote(name) {
-  return name == 'C7' || name == 'C#7' || name == 'D7' || name == 'D#7' || name == 'E7';
-}
+// function isValidNote(name) {
+//   return name == 'C7' || name == 'C#7' || name == 'D7' || name == 'D#7' || name == 'E7';
+// }
 
 function getNoteIdByName(name) {
   let id = 0;
@@ -351,17 +352,17 @@ document.addEventListener('keydown', (event) => {
     if (fail) {
       // console.log('FAIL');
     }
-  } else if (event.key == 'q') {
-    generateNote(0);
-  } else if (event.key == 'w') {
-    generateNote(1);
-  } else if (event.key == 'u') {
-    generateNote(2);
-  } else if (event.key == 'i') {
-    generateNote(3);
-  } else if (event.key == 'o') {
-    generateNote(4);
-  }
+  } // else if (event.key == 'q') {
+  //   generateNote(0);
+  // } else if (event.key == 'w') {
+  //   generateNote(1);
+  // } else if (event.key == 'u') {
+  //   generateNote(2);
+  // } else if (event.key == 'i') {
+  //   generateNote(3);
+  // } else if (event.key == 'o') {
+  //   generateNote(4);
+  // }
 });
 
 document.addEventListener('keyup', (event) => {
@@ -405,8 +406,8 @@ let tempoPos = 1;
 let bpm = 0;
 let ppq = 0;
 
-function loadMidiData(cb) {
-  fetch('/test')
+function loadMidiData(id, cb) {
+  fetch(`/midi/${id}`)
     .then((response) => response.json())
     .then((data) => {
       // console.log(data);
@@ -452,21 +453,21 @@ function step(timestamp) {
       // console.log('TERMINO LA CANCION XDXDXD');
       player.stopVideo();
     } else {
-      if (notes[notePos] && isValidNote(notes[notePos].name) && ticks >= notes[notePos].ticks) {
+      if (notes[notePos] && ticks >= notes[notePos].ticks) {
         let moreNotes = 0;
-        if (notes[notePos + 1] && isValidNote(notes[notePos + 1].name) && notes[notePos].ticks == notes[notePos + 1].ticks) {
+        if (notes[notePos + 1] && notes[notePos].ticks == notes[notePos + 1].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 1].name));
           moreNotes += 1;
         }
-        if (notes[notePos + 2] && isValidNote(notes[notePos + 2].name) && notes[notePos].ticks == notes[notePos + 2].ticks) {
+        if (notes[notePos + 2] && notes[notePos].ticks == notes[notePos + 2].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 2].name));
           moreNotes += 1;
         }
-        if (notes[notePos + 3] && isValidNote(notes[notePos + 3].name) && notes[notePos].ticks == notes[notePos + 3].ticks) {
+        if (notes[notePos + 3] && notes[notePos].ticks == notes[notePos + 3].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 3].name));
           moreNotes += 1;
         }
-        if (notes[notePos + 4] && isValidNote(notes[notePos + 4].name) && notes[notePos].ticks == notes[notePos + 4].ticks) {
+        if (notes[notePos + 4] && notes[notePos].ticks == notes[notePos + 4].ticks) {
           generateNote(getNoteIdByName(notes[notePos + 4].name));
           moreNotes += 1;
         }

@@ -28,8 +28,8 @@ server.listen(port, () => {
   console.log(`\u001b[33m* Server started on port: ${port}`);
 });
 
-app.get('/test', (req, res) => {
-  const id = 2;
+app.get('/midi/:id', (req, res) => {
+  const id = req.params.id;
   const midiData = fs.readFileSync(`./web_server/songs/song${id}/notes.mid`);
   const midi = new Midi(midiData);
   res.send(midi);
