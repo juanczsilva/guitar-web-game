@@ -28,6 +28,21 @@ server.listen(port, () => {
   console.log(`\u001b[33m* Server started on port: ${port}`);
 });
 
+app.get('/songlist', (req, res) => {
+  const songs = [];
+  const songsPath = './web_server/songs';
+  const songsDir = fs.readdirSync(songsPath);
+  console.log(songsDir);
+  songsDir.forEach((songPath, i) => {
+    console.log(songPath, (fs.lstatSync(`${songsPath}/${songPath}`)).isDirectory());
+    const song = { id: 0, name: '' };
+    song.id = i + 1;
+    song.name = songPath;
+    songs.push(song);
+  });
+  res.send({ songlist: songs });
+});
+
 app.get('/midi/:id', (req, res) => {
   const id = req.params.id;
   const midiData = fs.readFileSync(`./web_server/songs/song${id}/notes.mid`);
