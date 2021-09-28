@@ -45,3 +45,17 @@
     box-shadow: 1px 10px 51px 0px rgba(0,0,0,0.75);
     height: 100%;
 }
+
+.songitem {
+    padding: 10px;
+}
+
+.songitem > span {
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.songitem:hover {
+    cursor: pointer;
+    background-color: #00004d;
+}

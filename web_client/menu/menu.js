@@ -10,12 +10,16 @@ function getSongs() {
     });
 }
 
+let songs = [];
+
 function loadSongs(data) {
+  songs = data.songlist;
   const songsList = document.getElementById('songs');
-  (data.songlist).forEach((song) => {
+  (songs).forEach((song) => {
     const songItem = document.createElement('li');
+    songItem.className = 'songitem';
     songItem.value = song.id;
-    songItem.textContent = `${song.name}`;
+    songItem.innerHTML = `<span>${song.artist}</span> <b>${song.name}</b>`;
     songsList.appendChild(songItem);
   });
 }
@@ -24,5 +28,12 @@ function loadSongs(data) {
 function selectSong(e) {
   const event = e || window.event;
   const target = event.target || event.srcElement;
-  console.log(target.value);
+  const id = target.value;
+  loadSongInfo(id);
+}
+
+function loadSongInfo(id) {
+  const imgAlbum = document.getElementById('songinfo-album');
+  const song = songs.find((s) => s.id == id);
+  imgAlbum.setAttribute('src', `data:image/png;base64,${song.album}`);
 }

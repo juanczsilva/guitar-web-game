@@ -3,6 +3,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const { Midi } = require('@tonejs/midi');
 const fs = require('fs');
+const ini = require('ini');
 
 const app = express();
 
@@ -32,12 +33,18 @@ app.get('/songlist', (req, res) => {
   const songs = [];
   const songsPath = './web_server/songs';
   const songsDir = fs.readdirSync(songsPath);
-  console.log(songsDir);
+  // console.log(songsDir);
   songsDir.forEach((songPath, i) => {
-    console.log(songPath, (fs.lstatSync(`${songsPath}/${songPath}`)).isDirectory());
-    const song = { id: 0, name: '' };
-    song.id = i + 1;
-    song.name = songPath;
+    // console.log(songPath, (fs.lstatSync(`${songsPath}/${songPath}`)).isDirectory());
+    const songDir = `${songsPath}/${songPath}`;
+    const album = fs.readFileSync(`${songDir}/album.png`, { encoding: 'base64' });
+    const songini = ini.parse(fs.readFileSync(`${songDir}/song.ini`, 'utf-8'));
+    const song = {
+      id: (i + 1),
+      name: songini.song.name,
+      artist: songini.song.artist,
+      album
+    };
     songs.push(song);
   });
   res.send({ songlist: songs });
