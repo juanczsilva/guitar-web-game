@@ -37,13 +37,18 @@ app.get('/songlist', (req, res) => {
   songsDir.forEach((songPath, i) => {
     // console.log(songPath, (fs.lstatSync(`${songsPath}/${songPath}`)).isDirectory());
     const songDir = `${songsPath}/${songPath}`;
-    const album = fs.readFileSync(`${songDir}/album.png`, { encoding: 'base64' });
+    const albumimg = fs.readFileSync(`${songDir}/album.png`, { encoding: 'base64' });
     const songini = ini.parse(fs.readFileSync(`${songDir}/song.ini`, 'utf-8'));
     const song = {
       id: (i + 1),
       name: songini.song.name,
       artist: songini.song.artist,
-      album
+      albumimg,
+      album: songini.song.album,
+      year: songini.song.year,
+      genre: songini.song.genre,
+      frets: (songini.song.frets ? songini.song.frets : songini.song.charter),
+      phrase: songini.song.loading_phrase
     };
     songs.push(song);
   });
