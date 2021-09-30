@@ -11,6 +11,7 @@ function getSongs() {
 }
 
 let songs = [];
+let currentSongId = 0;
 
 function loadSongs(data) {
   songs = data.songlist;
@@ -38,6 +39,7 @@ function selectSong(e) {
 
 function loadSongInfo(id) {
   const song = songs.find((s) => s.id == id);
+  currentSongId = song.id;
   const imgAlbum = document.getElementById('songinfo-albumimg');
   const album = document.getElementById('songinfo-album');
   const year = document.getElementById('songinfo-year');
@@ -48,4 +50,15 @@ function loadSongInfo(id) {
   year.textContent = song.year;
   genre.textContent = song.genre;
   frets.textContent = song.frets;
+}
+
+// eslint-disable-next-line no-unused-vars
+function playCurrentSong() {
+  if (currentSongId != 0) {
+    document.getElementById('loader').style.display = 'block';
+    document.getElementById('menu').style.display = 'none';
+    const song = songs.find((s) => s.id == currentSongId);
+    // eslint-disable-next-line no-undef
+    startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay);
+  }
 }

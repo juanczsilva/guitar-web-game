@@ -11,6 +11,7 @@
     <script src='./game/game.js'></script>
 </head>
 <body>
+    <div id="loader" class="loader"><h1 style="text-align: center;">Cargando...</h1></div>
     <div id="menu" class="menu">
         <div class='row'>
             <div class='col songlist'>
@@ -20,19 +21,21 @@
             </div>
             <div class='col songinfo'>
                 <div class="songinfo-panel">
-                    <div style="height: 60%;"><img id="songinfo-albumimg" width="100%" height="100%" /></div>
-                    <div style="height: 40%;"><ul style="list-style-type: none; padding: 0; text-align: center;">
+                    <div><img id="songinfo-albumimg" width="100%" height="100%" /></div>
+                    <div><ul style="list-style-type: none; padding: 0; text-align: center;">
                         <li id="songinfo-album" style="padding: 5px;"></li>
                         <li id="songinfo-year" style="padding: 5px;"></li>
                         <li id="songinfo-genre" style="padding: 5px;"></li>
                         <li id="songinfo-frets" style="padding: 5px;"></li>
                     </ul></div>
                 </div>
+                <div class="btn-play-container">
+                    <button type="button" class="btn-play" onclick="playCurrentSong();">Jugar</button>
+                </div>
             </div>
         </div>
     </div>
     <div id="game">
-        <div id="loader" class="loader"><h1 style="text-align: center;">Cargando...</h1></div>
         <div id="topbar" style="position: absolute; top: 0; background-color: black; width: 100%; height: 60px;"></div>
         <!-- <div id="events" class="events left">Eventos</div>
         <div id="btns" class="btns right">Botones</div> -->

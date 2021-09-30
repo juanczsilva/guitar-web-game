@@ -1,16 +1,20 @@
+let videoDelay = 0;
+let notesDelay = 0;
+
 // eslint-disable-next-line no-unused-vars
-function startSong(youtubeId, songId) {
+function startSong(youtubeId, songId, vDelay, nDelay) {
+  videoDelay = vDelay;
+  notesDelay = nDelay;
   const playerEle = document.getElementById('player');
   playerEle.setAttribute('src', 'http://www.youtube.com/embed/'
-    + `${youtubeId}` // lithium SJLe1UTqKvA // arcade MuCy9jIyWw4
+    + `${youtubeId}`
     + '?enablejsapi=1'
     + `&origin=${window.location.origin}`
-    + '&start=0'
+    + '&start=1'
     + '&autoplay=0'
     + '&controls=0'
     + '&showinfo=0'
-    + '&rel=0'
-    + '&widgetid=1');
+    + '&rel=0');
   loadMidiData(songId, () => {
     // console.log(cb);
     setTimeout(() => {
@@ -44,30 +48,41 @@ function onPlayerStateChange(event) {
     // player.mute();
     if (!playerInit) {
       playerInit = true;
-      // player.stopVideo();
       player.unMute();
       player.setVolume(100);
-      setTimeout(() => {
-        // player.seekTo(10);
-        // player.playVideo();
+      if (videoDelay > 0) {
+        player.pauseVideo();
+        setTimeout(() => {
+          // player.seekTo(1);
+          player.playVideo();
+        }, videoDelay);
+      }
+      if (notesDelay > 0) {
+        setTimeout(() => {
+          iniLoop();
+        }, notesDelay);
+      } else {
         iniLoop();
-      }, 5800);
+      }
     }
-    // document.getElementById("topbot").style.height = "60px";
+    setTimeout(() => {
+      document.getElementById('topbot').style.height = '60px';
+      document.getElementById('topbot').style.zIndex = '0';
+    }, 1000);
   // eslint-disable-next-line no-undef
   } else if (event.data == YT.PlayerState.PAUSED) {
-    // document.getElementById("topbot").style.height = "170px";
+    document.getElementById('topbot').style.height = '170px';
+    document.getElementById('topbot').style.zIndex = '-1';
   }
 }
 
 // *** GAME ***
 // eslint-disable-next-line no-undef
-const sock = io();
+// const sock = io();
 
-sock.on('msg', (text) => {
-  // console.log(text);
-  document.getElementById('topbot').innerHTML = text;
-});
+// sock.on('msg', (text) => {
+// console.log(text);
+// });
 
 function elementAnimate(item, type) {
   let noteLeftStart = '';
@@ -181,7 +196,7 @@ function isColliding(div1, div2) {
     || d1Left < d2OffsetLeft || d1OffsetLeft > d2Left);
 }
 
-let score = 0;
+// let score = 0;
 const flameTime = 400;
 let flameGreenTimer;
 let flameRedTimer;
@@ -226,8 +241,8 @@ function hitNote(note, type) {
     default:
       break;
   }
-  score += 100;
-  document.getElementById('topbot').innerHTML = (`SCORE: ${score}`);
+  // score += 100;
+  // console.log(`SCORE: ${score}`);
 }
 
 let greenPressed = false;
@@ -450,7 +465,6 @@ function step(timestamp) {
     }
     start = timestamp;
     if (ticks >= endOfTrackTicks) {
-      // console.log('TERMINO LA CANCION XDXDXD');
       player.stopVideo();
     } else {
       if (notes[notePos] && ticks >= notes[notePos].ticks) {
