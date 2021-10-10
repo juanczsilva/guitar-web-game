@@ -121,7 +121,10 @@ function elementAnimate(item, type) {
     direction: 'normal',
     fill: 'forwards'
   }).onfinish = () => {
-    item.remove();
+    if (document.body.contains(item)) {
+      item.remove();
+      onFail();
+    }
   };
 }
 
@@ -197,6 +200,7 @@ function isColliding(div1, div2) {
 }
 
 let score = 0;
+let combo = 0;
 const flameTime = 400;
 let flameGreenTimer;
 let flameRedTimer;
@@ -241,8 +245,48 @@ function hitNote(note, type) {
     default:
       break;
   }
-  score += 100;
+  onScore();
+}
+
+function onScore() {
+  let scorePlus = 0;
+  combo += 1;
+  onCombo();
+  if (combo < 10) {
+    scorePlus = 100;
+    document.getElementById('multi').innerHTML = 'x1';
+    document.getElementById('multi').style.color = '#ff0000';
+  } else if (combo < 20) {
+    scorePlus = 200;
+    document.getElementById('multi').innerHTML = 'x2';
+    document.getElementById('multi').style.color = '#ffffff';
+  } else if (combo < 30) {
+    scorePlus = 300;
+    document.getElementById('multi').innerHTML = 'x3';
+    document.getElementById('multi').style.color = '#ffff00';
+  } else if (combo >= (40 - 10)) {
+    scorePlus = 400;
+    document.getElementById('multi').innerHTML = 'x4';
+    document.getElementById('multi').style.color = '#00ff00';
+  }
+  score += scorePlus;
   document.getElementById('score').innerHTML = score;
+}
+
+let comboTimer;
+function onCombo() {
+  if (Number.isInteger(combo / 5)) {
+    document.getElementById('combo').innerHTML = `${combo}!`;
+    document.getElementById('combo').parentElement.style.display = 'block';
+    clearTimeout(comboTimer);
+    comboTimer = setTimeout(() => { document.getElementById('combo').parentElement.style.display = 'none'; }, 2000);
+  }
+}
+
+function onFail() {
+  combo = 0;
+  document.getElementById('multi').innerHTML = 'x1';
+  document.getElementById('multi').style.color = '#ff0000';
 }
 
 let greenPressed = false;
@@ -273,7 +317,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      // console.log('FAIL');
+      onFail();
     }
   } else if (!redPressed && event.key == 's') {
     // console.log(event.key);
@@ -296,7 +340,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      // console.log('FAIL');
+      onFail();
     }
   } else if (!yellowPressed && event.key == 'j') {
     // console.log(event.key);
@@ -319,7 +363,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      // console.log('FAIL');
+      onFail();
     }
   } else if (!bluePressed && event.key == 'k') {
     // console.log(event.key);
@@ -342,7 +386,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      // console.log('FAIL');
+      onFail();
     }
   } else if (!orangePressed && event.key == 'l') {
     // console.log(event.key);
@@ -365,7 +409,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      // console.log('FAIL');
+      onFail();
     }
   } // else if (event.key == 'q') {
   //   generateNote(0);
