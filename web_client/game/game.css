@@ -214,3 +214,34 @@ body {
     height: 100%;
     background-color: #000;
 }
+
+.amp-container {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: #000;
+    border-radius: 15px;
+    top: 50%;
+    left: -55%;
+    text-align: center;
+}
+
+.amp-combo {
+    display: none;
+    position: absolute;
+    width: 100%;
+    top: -45%;
+}
+
+.amp-multi {
+    width: 90%;
+    font-size: 32pt;
+    background-color: #202020;
+    border-radius: 15px;
+    margin: 5%;
+}
+
+.amp-score {
+    color: #00ff00;
+    margin-top: 10%;
+}

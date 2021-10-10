@@ -196,7 +196,7 @@ function isColliding(div1, div2) {
     || d1Left < d2OffsetLeft || d1OffsetLeft > d2Left);
 }
 
-// let score = 0;
+let score = 0;
 const flameTime = 400;
 let flameGreenTimer;
 let flameRedTimer;
@@ -241,8 +241,8 @@ function hitNote(note, type) {
     default:
       break;
   }
-  // score += 100;
-  // console.log(`SCORE: ${score}`);
+  score += 100;
+  document.getElementById('score').innerHTML = score;
 }
 
 let greenPressed = false;
