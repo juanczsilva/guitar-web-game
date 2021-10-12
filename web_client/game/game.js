@@ -123,7 +123,7 @@ function elementAnimate(item, type) {
   }).onfinish = () => {
     if (document.body.contains(item)) {
       item.remove();
-      onFail();
+      onFail(false);
     }
   };
 }
@@ -283,10 +283,26 @@ function onCombo() {
   }
 }
 
-function onFail() {
+function onFail(failNote) {
+  if (combo >= 5 || failNote) failSound();
   combo = 0;
   document.getElementById('multi').innerHTML = 'x1';
   document.getElementById('multi').style.color = '#ff0000';
+}
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function failSound() {
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  gainNode.gain.value = 0.25;
+  oscillator.frequency.value = (30 + (Math.floor(Math.random() * 21)));
+  oscillator.type = 'sawtooth';
+  oscillator.start();
+  setTimeout(() => {
+    oscillator.stop();
+  }, 120);
 }
 
 let greenPressed = false;
@@ -317,7 +333,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      onFail();
+      onFail(true);
     }
   } else if (!redPressed && event.key == 's') {
     // console.log(event.key);
@@ -340,7 +356,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      onFail();
+      onFail(true);
     }
   } else if (!yellowPressed && event.key == 'j') {
     // console.log(event.key);
@@ -363,7 +379,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      onFail();
+      onFail(true);
     }
   } else if (!bluePressed && event.key == 'k') {
     // console.log(event.key);
@@ -386,7 +402,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      onFail();
+      onFail(true);
     }
   } else if (!orangePressed && event.key == 'l') {
     // console.log(event.key);
@@ -409,7 +425,7 @@ document.addEventListener('keydown', (event) => {
       }
     }
     if (fail) {
-      onFail();
+      onFail(true);
     }
   } // else if (event.key == 'q') {
   //   generateNote(0);
