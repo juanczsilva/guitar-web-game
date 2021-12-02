@@ -12,7 +12,7 @@ app.use(express.static(clientPath));
 console.log(`\n\u001b[33m* Serving static from '${clientPath}'`);
 
 const server = http.createServer(app);
-const port = 8080;
+const port = (process.env.PORT || 8080);
 
 const io = socketio(server);
 
