@@ -245,3 +245,13 @@ body {
     color: #00ff00;
     margin-top: 10%;
 }
+
+.btn-volver {
+    margin-top: 15px;
+    margin-left: 30px;
+    font-family: monospace;
+    font-size: 18px;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}

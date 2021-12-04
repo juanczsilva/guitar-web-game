@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="overflow: hidden;">
 <head>
     <meta charset='utf-8'>
     <title>guitar-web-game</title>
@@ -36,7 +36,9 @@
         </div>
     </div>
     <div id="game">
-        <div id="topbar" style="position: absolute; top: 0; background-color: black; width: 100%; height: 60px;"></div>
+        <div id="topbar" style="position: absolute; top: 0; background-color: black; width: 100%; height: 60px;">
+            <button class="btn-volver" onclick="javascript:location.reload()">&lt;- Volver</button>
+        </div>
         <!-- <div id="events" class="events left">Eventos</div>
         <div id="btns" class="btns right">Botones</div> -->
         <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
@@ -48,7 +50,7 @@
                 <div id="multi" class="amp-multi"></div>
                 <div id="score" class="amp-score"></div>
             </div>
-            <img id="imgneck" class="imgneck" src="./imgs/neck.png" />
+            <img tabindex="0" id="imgneck" class="imgneck" src="./imgs/neck.png" />
             <div id="hitnotegreen" class="hitnote hitnote-green"></div>
             <div id="hitnotered" class="hitnote hitnote-red"></div>
             <div id="hitnoteyellow" class="hitnote hitnote-yellow"></div>

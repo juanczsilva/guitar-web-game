@@ -41,6 +41,9 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
+let isPaused = false;
+let canPause = false;
+
 function onPlayerStateChange(event) {
   // console.log(event);
   // eslint-disable-next-line no-undef
@@ -55,7 +58,10 @@ function onPlayerStateChange(event) {
         setTimeout(() => {
           // player.seekTo(1);
           player.playVideo();
+          canPause = true;
         }, videoDelay);
+      } else {
+        canPause = true;
       }
       if (notesDelay > 0) {
         setTimeout(() => {
@@ -64,13 +70,17 @@ function onPlayerStateChange(event) {
       } else {
         iniLoop();
       }
+    } else {
+      if (isPaused) pauseHandler(false);
     }
+    document.getElementById('imgneck').focus();
     setTimeout(() => {
       document.getElementById('topbot').style.height = '60px';
       document.getElementById('topbot').style.zIndex = '0';
     }, 1000);
   // eslint-disable-next-line no-undef
   } else if (event.data == YT.PlayerState.PAUSED) {
+    if (canPause) pauseHandler(true);
     document.getElementById('topbot').style.height = '170px';
     document.getElementById('topbot').style.zIndex = '-1';
   }
@@ -83,6 +93,24 @@ function onPlayerStateChange(event) {
 // sock.on('msg', (text) => {
 // console.log(text);
 // });
+
+// let elementsWaitingAnim = [];
+// let elementsPausedAnim = [];
+
+function pauseHandler(pause) {
+  isPaused = pause;
+  const elemsAnim = document.getElementsByClassName('note');
+  if (pause) {
+    for (let i = 0; i < elemsAnim.length; i += 1) {
+      elemsAnim[i].getAnimations().forEach((anim) => anim.pause());
+    }
+  } else {
+    for (let i = 0; i < elemsAnim.length; i += 1) {
+      elemsAnim[i].getAnimations().forEach((anim) => anim.play());
+    }
+    window.requestAnimationFrame(step);
+  }
+}
 
 function elementAnimate(item, type) {
   let noteLeftStart = '';
@@ -111,7 +139,7 @@ function elementAnimate(item, type) {
     default:
       break;
   }
-  item.animate([
+  const anim = item.animate([
     { top: '25%', left: noteLeftStart },
     { top: '125%', left: noteLeftEnd, width: '30%' }
   ], {
@@ -120,7 +148,11 @@ function elementAnimate(item, type) {
     iterations: 1,
     direction: 'normal',
     fill: 'forwards'
-  }).onfinish = () => {
+  });
+  if (isPaused) {
+    anim.pause();
+  }
+  anim.onfinish = () => {
     if (document.body.contains(item)) {
       item.remove();
       onFail(false);
@@ -427,17 +459,13 @@ document.addEventListener('keydown', (event) => {
     if (fail) {
       onFail(true);
     }
-  } // else if (event.key == 'q') {
-  //   generateNote(0);
-  // } else if (event.key == 'w') {
-  //   generateNote(1);
-  // } else if (event.key == 'u') {
-  //   generateNote(2);
-  // } else if (event.key == 'i') {
-  //   generateNote(3);
-  // } else if (event.key == 'o') {
-  //   generateNote(4);
-  // }
+  } else if (event.key == 'p' || event.key === 'Escape' || event.key === 'Esc') {
+    if (isPaused) {
+      player.playVideo();
+    } else {
+      player.pauseVideo();
+    }
+  }
 });
 
 document.addEventListener('keyup', (event) => {
@@ -547,12 +575,12 @@ function step(timestamp) {
         }
         generateNote(getNoteIdByName(notes[notePos].name));
         notePos += (1 + moreNotes);
-        window.requestAnimationFrame(step);
+        if (!isPaused) window.requestAnimationFrame(step);
       } else {
-        window.requestAnimationFrame(step);
+        if (!isPaused) window.requestAnimationFrame(step);
       }
     }
   } else {
-    window.requestAnimationFrame(step);
+    if (!isPaused) window.requestAnimationFrame(step);
   }
 }
