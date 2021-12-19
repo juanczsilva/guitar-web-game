@@ -30,7 +30,10 @@ function loadSongs(data) {
 // eslint-disable-next-line no-unused-vars
 function selectSong(e) {
   const event = e || window.event;
-  const target = event.target || event.srcElement;
+  let target = event.target || event.srcElement;
+  if (target.nodeName != 'LI') {
+    target = target.parentNode;
+  }
   target.parentElement.childNodes.forEach((songItem) => { songItem.style.backgroundColor = null; });
   target.style.backgroundColor = '#4d4d4d';
   const id = target.value;
@@ -55,10 +58,37 @@ function loadSongInfo(id) {
 // eslint-disable-next-line no-unused-vars
 function playCurrentSong() {
   if (currentSongId != 0) {
-    document.getElementById('loader').style.display = 'block';
+    loaderProcess();
     document.getElementById('menu').style.display = 'none';
     const song = songs.find((s) => s.id == currentSongId);
     // eslint-disable-next-line no-undef
     startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay);
   }
+}
+
+// eslint-disable-next-line no-unused-vars
+let loaderTimer;
+function loaderProcess() {
+  document.getElementById('loader').style.display = 'block';
+  const loaderTxt = document.getElementById('loader').firstChild;
+  let dotsNum = 1;
+  loaderTxt.innerHTML = 'Cargando.';
+  loaderTimer = setInterval(() => {
+    dotsNum = (dotsNum == 3 ? 1 : (dotsNum + 1));
+    let dots = '';
+    switch (dotsNum) {
+      case 1:
+        dots = '.';
+        break;
+      case 2:
+        dots = '..';
+        break;
+      case 3:
+        dots = '...';
+        break;
+      default:
+        break;
+    }
+    loaderTxt.innerHTML = `Cargando${dots}`;
+  }, 500);
 }
