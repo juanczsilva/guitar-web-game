@@ -76,15 +76,18 @@ function onPlayerStateChange(event) {
       if (isPaused) pauseHandler(false);
     }
     document.getElementById('imgneck').focus();
+    window.scrollTo({ top: 0 });
     setTimeout(() => {
       document.getElementById('topbot').style.height = '60px';
       document.getElementById('topbot').style.zIndex = '0';
+      window.scrollTo({ top: 0 });
     }, 1000);
   // eslint-disable-next-line no-undef
   } else if (event.data == YT.PlayerState.PAUSED) {
     if (canPause) pauseHandler(true);
     document.getElementById('topbot').style.height = '170px';
     document.getElementById('topbot').style.zIndex = '-1';
+    window.scrollTo({ top: 0 });
   }
 }
 

@@ -62,5 +62,6 @@ app.get('/midi/:id', (req, res) => {
   const id = req.params.id;
   const midiData = fs.readFileSync(`./web_server/songs/song${id}/notes.mid`);
   const midi = new Midi(midiData);
+  midi.tracks = midi.tracks.filter((t) => (t.name).toUpperCase().includes('GUITAR'));
   res.send(midi);
 });

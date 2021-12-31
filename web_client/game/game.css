@@ -43,6 +43,8 @@ body {
     bottom: 20%;
     max-width: 284px;
     min-width: 284px;
+    min-height: 560px;
+    max-height: 560px;
 }
 
 .imgneck {
@@ -260,3 +262,26 @@ body {
     border: 1px solid #808080;
     border-radius: 5px;
 }
+
+@media(max-height: 815px) {
+   .topbot {
+       display: none;
+    }
+ }
+ 
+ .topbar {
+    position: absolute;
+    top: 0;
+    background-color: black;
+    width: 100%;
+    height: 60px;
+ }
+
+ .topbot {
+    position: absolute;
+    bottom: 0;
+    background-color: black;
+    width: 100%;
+    height: 60px;
+ }
+ 
