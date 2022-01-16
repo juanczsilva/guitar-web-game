@@ -51,7 +51,8 @@ app.get('/songlist', (req, res) => {
       phrase: songini.song.loading_phrase,
       youtubeId: songini.song.youtube_id,
       youtubeVideoDelay: songini.song.youtube_video_delay,
-      youtubeNotesDelay: songini.song.youtube_notes_delay
+      youtubeNotesDelay: songini.song.youtube_notes_delay,
+      youtubeEndDelay: songini.song.youtube_end_delay
     };
     songs.push(song);
   });

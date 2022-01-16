@@ -65,6 +65,8 @@
 
 .songitem {
     padding: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .songitem > span {
@@ -96,4 +98,44 @@
     color: #fff;
     border-radius: 5px;
     border-color: #fff;
+}
+
+.star {
+    position: relative;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: .9em;
+    margin-right: .9em;
+    margin-bottom: 1.2em;
+    border-right:  .3em solid transparent;
+    border-bottom: .7em  solid #D3A81E;
+    border-left:   .3em solid transparent;
+    font-size: 10px;
+}
+
+.star:before, .star:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: .6em;
+    left: -1em;
+    border-right:  1em solid transparent;
+    border-bottom: .7em  solid #D3A81E;
+    border-left:   1em solid transparent;
+    transform: rotate(-35deg);
+}
+
+.star:after {  
+    transform: rotate(35deg);
+}
+
+.star-empty {
+    border-bottom: .7em  solid #FFFFFF;
+}
+
+.star-empty:before, .star-empty:after {
+    border-bottom: .7em  solid #FFFFFF;
 }

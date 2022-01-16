@@ -20,7 +20,15 @@ function loadSongs(data) {
     const songItem = document.createElement('li');
     songItem.className = 'songitem';
     songItem.value = song.id;
-    songItem.innerHTML = `<span>${song.artist}</span> <b>${song.name}</b>`;
+    const songIdPercent = window.localStorage.getItem(`song${song.id}percent`) || '0%';
+    const songIdStars = calcStars(window.localStorage.getItem(`song${song.id}stars`) || 0);
+    songItem.innerHTML = `
+      <span>${song.artist}</span><b>${song.name}</b>
+      <div style="margin-left: auto; display: flex; gap: 10px;">
+        ${songIdStars}
+        <span style="min-width: 40px; text-align: right;">${songIdPercent}</span>
+      </div>
+    `;
     if (i == 0) songItem.style.backgroundColor = '#4d4d4d';
     songsList.appendChild(songItem);
   });
@@ -62,6 +70,67 @@ function playCurrentSong() {
     document.getElementById('menu').style.display = 'none';
     const song = songs.find((s) => s.id == currentSongId);
     // eslint-disable-next-line no-undef
-    startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay);
+    startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay, song.youtubeEndDelay);
   }
+}
+
+function calcStars(stars) {
+  let starsElems = '';
+  switch (stars) {
+    case '1':
+      starsElems = `
+        <i class="star"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+      `;
+      break;
+    case '2':
+      starsElems = `
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+      `;
+      break;
+    case '3':
+      starsElems = `
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+      `;
+      break;
+    case '4':
+      starsElems = `
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star star-empty"></i>
+      `;
+      break;
+    case '5':
+      starsElems = `
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star"></i>
+        <i class="star"></i>
+      `;
+      break;
+    default:
+      starsElems = `
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+        <i class="star star-empty"></i>
+      `;
+      break;
+  }
+  return starsElems;
 }

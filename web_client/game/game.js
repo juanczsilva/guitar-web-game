@@ -1,10 +1,12 @@
 let videoDelay = 0;
 let notesDelay = 0;
+let endDelay = 0;
 
 // eslint-disable-next-line no-unused-vars
-function startSong(youtubeId, songId, vDelay, nDelay) {
+function startSong(youtubeId, songId, vDelay, nDelay, eDelay) {
   videoDelay = vDelay;
   notesDelay = nDelay;
+  endDelay = eDelay;
   const playerEle = document.getElementById('player');
   playerEle.setAttribute('src', 'http://www.youtube.com/embed/'
     + `${youtubeId}`
@@ -557,7 +559,9 @@ function step(timestamp) {
     }
     start = timestamp;
     if (ticks >= endOfTrackTicks) {
-      player.stopVideo();
+      setTimeout(() => {
+        player.stopVideo();
+      }, endDelay);
     } else {
       if (notes[notePos] && ticks >= notes[notePos].ticks) {
         let moreNotes = 0;
