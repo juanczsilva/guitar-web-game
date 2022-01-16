@@ -58,37 +58,10 @@ function loadSongInfo(id) {
 // eslint-disable-next-line no-unused-vars
 function playCurrentSong() {
   if (currentSongId != 0) {
-    loaderProcess();
+    document.getElementById('loader').style.display = 'block';
     document.getElementById('menu').style.display = 'none';
     const song = songs.find((s) => s.id == currentSongId);
     // eslint-disable-next-line no-undef
     startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay);
   }
-}
-
-// eslint-disable-next-line no-unused-vars
-let loaderTimer;
-function loaderProcess() {
-  document.getElementById('loader').style.display = 'block';
-  const loaderTxt = document.getElementById('loader').firstChild;
-  let dotsNum = 1;
-  loaderTxt.innerHTML = 'Cargando.';
-  loaderTimer = setInterval(() => {
-    dotsNum = (dotsNum == 3 ? 1 : (dotsNum + 1));
-    let dots = '';
-    switch (dotsNum) {
-      case 1:
-        dots = '.';
-        break;
-      case 2:
-        dots = '..';
-        break;
-      case 3:
-        dots = '...';
-        break;
-      default:
-        break;
-    }
-    loaderTxt.innerHTML = `Cargando${dots}`;
-  }, 500);
 }

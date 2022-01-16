@@ -34,7 +34,6 @@ function onYouTubeIframeAPIReady() {
   // console.log('onYouTubeIframeAPIReady');
   document.getElementById('loader').style.display = 'none';
   // eslint-disable-next-line no-undef
-  clearInterval(loaderTimer);
   // eslint-disable-next-line no-undef
   player = new YT.Player('player', {
     events: {

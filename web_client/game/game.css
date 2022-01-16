@@ -219,6 +219,32 @@ body {
     background-color: #000;
 }
 
+.loader > h1:before {
+    content: 'Cargando';
+    animation-name: loading;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+}
+
+.loader > .load-guitar {
+    transform: translate(20vw, 60px) rotate(45deg);
+    animation-name: loadguitar;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes loading {
+    25% { content: "\0000a0Cargando." }
+    50% { content: "\0000a0\0000a0Cargando.." }
+    75% { content: "\0000a0\0000a0\0000a0Cargando..." }
+}
+
+@keyframes loadguitar {
+    25% { transform: translate(50vw) rotate(360deg); }
+    75% { transform: translate(80vw, 60px) rotate(765deg); }
+}
+
+
 .amp-container {
     position: absolute;
     width: 100px;
