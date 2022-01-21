@@ -70,7 +70,7 @@ function playCurrentSong() {
     document.getElementById('menu').style.display = 'none';
     const song = songs.find((s) => s.id == currentSongId);
     // eslint-disable-next-line no-undef
-    startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay, song.youtubeEndDelay);
+    startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay, song.youtubeEndDelay, song.artist, song.name);
   }
 }
 

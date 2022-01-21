@@ -1,12 +1,18 @@
 let videoDelay = 0;
 let notesDelay = 0;
 let endDelay = 0;
+let artistSong = '';
+let nameSong = '';
+let idSong = 0;
 
 // eslint-disable-next-line no-unused-vars
-function startSong(youtubeId, songId, vDelay, nDelay, eDelay) {
+function startSong(youtubeId, songId, vDelay, nDelay, eDelay, songArtist, songName) {
   videoDelay = vDelay;
   notesDelay = nDelay;
   endDelay = eDelay;
+  artistSong = songArtist;
+  nameSong = songName;
+  idSong = songId;
   const playerEle = document.getElementById('player');
   playerEle.setAttribute('src', 'http://www.youtube.com/embed/'
     + `${youtubeId}`
@@ -239,6 +245,8 @@ function isColliding(div1, div2) {
 
 let score = 0;
 let combo = 0;
+let notesOk = 0;
+let notesFail = 0;
 const flameTime = 400;
 let flameGreenTimer;
 let flameRedTimer;
@@ -288,6 +296,7 @@ function hitNote(note, type) {
 
 function onScore() {
   let scorePlus = 0;
+  notesOk += 1;
   combo += 1;
   onCombo();
   if (combo < 10) {
@@ -326,6 +335,7 @@ function onFail(failNote) {
   combo = 0;
   document.getElementById('multi').innerHTML = 'x1';
   document.getElementById('multi').style.color = '#ff0000';
+  if (!failNote) notesFail += 1;
 }
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -341,6 +351,38 @@ function failSound() {
   setTimeout(() => {
     oscillator.stop();
   }, 120);
+}
+
+function calcScore() {
+  const totalNotes = (notesOk + notesFail);
+  const notesPercent = Math.round((notesOk * 100) / totalNotes);
+  const starList = document.getElementById('scorestarlist').children;
+  let stars = 5;
+  document.getElementById('scoresong').innerHTML = `${artistSong}<br />${nameSong}`;
+  document.getElementById('scorefinalscore').innerHTML = score;
+  if (notesPercent <= 20) {
+    stars = 1;
+    starList[1].classList.add('star-empty');
+    starList[2].classList.add('star-empty');
+    starList[3].classList.add('star-empty');
+    starList[4].classList.add('star-empty');
+  } else if (notesPercent <= 40) {
+    stars = 2;
+    starList[2].classList.add('star-empty');
+    starList[3].classList.add('star-empty');
+    starList[4].classList.add('star-empty');
+  } else if (notesPercent <= 60) {
+    stars = 3;
+    starList[3].classList.add('star-empty');
+    starList[4].classList.add('star-empty');
+  } else if (notesPercent <= 80) {
+    stars = 4;
+    starList[4].classList.add('star-empty');
+  }
+  document.getElementById('scorenotes').innerHTML = `${notesOk}/${totalNotes}`;
+  document.getElementById('scorepercent').innerHTML = `${notesPercent}%`;
+  window.localStorage.setItem(`song${idSong}percent`, `${notesPercent}%`);
+  window.localStorage.setItem(`song${idSong}stars`, stars);
 }
 
 let greenPressed = false;
@@ -559,7 +601,9 @@ function step(timestamp) {
     }
     start = timestamp;
     if (ticks >= endOfTrackTicks) {
+      calcScore();
       setTimeout(() => {
+        document.getElementById('scorescreen').style.display = 'block';
         player.stopVideo();
       }, endDelay);
     } else {
