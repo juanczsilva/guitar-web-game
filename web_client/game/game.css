@@ -211,7 +211,7 @@ body {
 }
 
 .loader {
-    display: none;
+    /* display: none; */
     position: absolute;
     z-index: 200;
     width: 100%;
@@ -290,26 +290,26 @@ body {
 }
 
 @media(max-height: 815px) {
-   .topbot {
-       display: none;
+    .topbot {
+        display: none;
     }
- }
+}
  
- .topbar {
+.topbar {
     position: absolute;
     top: 0;
     background-color: black;
     width: 100%;
     height: 60px;
- }
+}
 
- .topbot {
+.topbot {
     position: absolute;
     bottom: 0;
     background-color: black;
     width: 100%;
     height: 60px;
- }
+}
  
 .score-backdrop {
     display: none;
@@ -356,4 +356,44 @@ body {
     cursor: pointer;
     border: 1px solid #808080;
     border-radius: 5px;
+}
+
+.star {
+    position: relative;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: .9em;
+    margin-right: .9em;
+    margin-bottom: 1.2em;
+    border-right:  .3em solid transparent;
+    border-bottom: .7em  solid #D3A81E;
+    border-left:   .3em solid transparent;
+    font-size: 10px;
+}
+
+.star:before, .star:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: .6em;
+    left: -1em;
+    border-right:  1em solid transparent;
+    border-bottom: .7em  solid #D3A81E;
+    border-left:   1em solid transparent;
+    transform: rotate(-35deg);
+}
+
+.star:after {  
+    transform: rotate(35deg);
+}
+
+.star-empty {
+    border-bottom: .7em  solid #FFFFFF;
+}
+
+.star-empty:before, .star-empty:after {
+    border-bottom: .7em  solid #FFFFFF;
 }

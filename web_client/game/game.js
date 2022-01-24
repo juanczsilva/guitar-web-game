@@ -1,3 +1,15 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const playId = window.location.href.split('/').pop();
+  if (!(Number.isNaN(playId))) {
+    fetch(`/song/${playId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const playSong = data.song;
+        startSong(playSong.youtubeId, playSong.id, playSong.youtubeVideoDelay, playSong.youtubeNotesDelay, playSong.youtubeEndDelay, playSong.artist, playSong.name);
+      });
+  }
+});
+
 let videoDelay = 0;
 let notesDelay = 0;
 let endDelay = 0;
@@ -40,7 +52,8 @@ let playerInit = false;
 // eslint-disable-next-line no-unused-vars
 function onYouTubeIframeAPIReady() {
   // console.log('onYouTubeIframeAPIReady');
-  document.getElementById('loader').style.display = 'none';
+  // document.getElementById('loader').style.display = 'none';
+  document.getElementById('loader').remove();
   // eslint-disable-next-line no-undef
   // eslint-disable-next-line no-undef
   player = new YT.Player('player', {
@@ -383,6 +396,7 @@ function calcScore() {
   document.getElementById('scorepercent').innerHTML = `${notesPercent}%`;
   window.localStorage.setItem(`song${idSong}percent`, `${notesPercent}%`);
   window.localStorage.setItem(`song${idSong}stars`, stars);
+  document.getElementById('scorescreen').style.display = 'block';
 }
 
 let greenPressed = false;
@@ -601,9 +615,8 @@ function step(timestamp) {
     }
     start = timestamp;
     if (ticks >= endOfTrackTicks) {
-      calcScore();
       setTimeout(() => {
-        document.getElementById('scorescreen').style.display = 'block';
+        calcScore();
         player.stopVideo();
       }, endDelay);
     } else {

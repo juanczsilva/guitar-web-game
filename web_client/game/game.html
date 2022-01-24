@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html style="overflow: hidden;">
+<head>
+    <meta charset='utf-8'>
+    <title>guitar-web-game</title>
+    <link rel="icon" type="image/png" href="../imgs/ico.png" />
+    <link rel='stylesheet' type='text/css' href='../game/game.css'>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='../game/game.js'></script>
+</head>
+<body>
+    <div id="loader" class="loader">
+        <h1 style="text-align: center;"></h1>
+        <img class="load-guitar" src="../imgs/loadingplug.jpg" />
+    </div>
+    <div id="game">
+        <div id="topbar" class="topbar">
+            <button class="btn-volver" onclick="javascript:location.assign(location.origin)">← Volver</button>
+        </div>
+        <!-- <div id="events" class="events left">Eventos</div>
+        <div id="btns" class="btns right">Botones</div> -->
+        <div class="score-backdrop" id="scorescreen">
+            <div class="score-card">
+                <div class="score-container">
+                    <div style="margin-bottom: auto;margin-top: auto;text-align: center;font-size: 18pt;">
+                        <b id="scoresong"></b>
+                    </div>
+                    <div><span id="scorefinalscore"></span></div>
+                    <div id="scorestarlist" style="display: flex; gap: 10px;">
+                        <i class="star"></i>
+                        <i class="star"></i>
+                        <i class="star"></i>
+                        <i class="star"></i>
+                        <i class="star"></i>
+                    </div>
+                    <div><span id="scorenotes"></span></div>
+                    <div><span id="scorepercent"></span></div>
+                    <div style="margin-top: auto;margin-bottom: auto;">
+                        <button class="btn-volver-score" onclick="javascript:location.assign(location.origin)">Volver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
+            <iframe id="player" frameborder="0" allowfullscreen="0" height="100%" width="100%" src=""></iframe>
+        </div>
+        <div id="neck" class="neck">
+            <div class="amp-container">
+                <div class="amp-combo">Combo:<br><span id="combo"></span></div>
+                <div id="multi" class="amp-multi"></div>
+                <div id="score" class="amp-score"></div>
+            </div>
+            <img tabindex="0" id="imgneck" class="imgneck" src="../imgs/neck.png" />
+            <div id="hitnotegreen" class="hitnote hitnote-green"></div>
+            <div id="hitnotered" class="hitnote hitnote-red"></div>
+            <div id="hitnoteyellow" class="hitnote hitnote-yellow"></div>
+            <div id="hitnoteblue" class="hitnote hitnote-blue"></div>
+            <div id="hitnoteorange" class="hitnote hitnote-orange"></div>
+            <div id="flame-hit-green" class="flame-container flame-hit-green">
+                <div class="flame red-flame"></div>
+                <div class="flame orange-flame"></div>
+                <div class="flame yellow-flame"></div>
+                <div class="flame white-flame"></div>
+            </div>
+            <div id="flame-hit-red" class="flame-container flame-hit-red">
+                <div class="flame red-flame"></div>
+                <div class="flame orange-flame"></div>
+                <div class="flame yellow-flame"></div>
+                <div class="flame white-flame"></div>
+            </div>
+            <div id="flame-hit-yellow" class="flame-container flame-hit-yellow">
+                <div class="flame red-flame"></div>
+                <div class="flame orange-flame"></div>
+                <div class="flame yellow-flame"></div>
+                <div class="flame white-flame"></div>
+            </div>
+            <div id="flame-hit-blue" class="flame-container flame-hit-blue">
+                <div class="flame red-flame"></div>
+                <div class="flame orange-flame"></div>
+                <div class="flame yellow-flame"></div>
+                <div class="flame white-flame"></div>
+            </div>
+            <div id="flame-hit-orange" class="flame-container flame-hit-orange">
+                <div class="flame red-flame"></div>
+                <div class="flame orange-flame"></div>
+                <div class="flame yellow-flame"></div>
+                <div class="flame white-flame"></div>
+            </div>
+        </div>
+        <div id="topbot" class="topbot"></div>
+    </div>
+</body>
+</html>

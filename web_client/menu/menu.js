@@ -66,11 +66,12 @@ function loadSongInfo(id) {
 // eslint-disable-next-line no-unused-vars
 function playCurrentSong() {
   if (currentSongId != 0) {
-    document.getElementById('loader').style.display = 'block';
-    document.getElementById('menu').style.display = 'none';
-    const song = songs.find((s) => s.id == currentSongId);
+    // document.getElementById('loader').style.display = 'block';
+    // document.getElementById('menu').style.display = 'none';
+    // const song = songs.find((s) => s.id == currentSongId);
     // eslint-disable-next-line no-undef
-    startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay, song.youtubeEndDelay, song.artist, song.name);
+    // startSong(song.youtubeId, song.id, song.youtubeVideoDelay, song.youtubeNotesDelay, song.youtubeEndDelay, song.artist, song.name);
+    window.location.assign(`${window.location.href}play/${currentSongId}`);
   }
 }
 
