@@ -239,10 +239,11 @@ function generateNote(type) {
   elementAnimate(note, type);
 }
 
+const colMargin = 28;
 function isColliding(div1, div2) {
-  const d1OffsetTop = div1.offsetTop;
+  const d1OffsetTop = div1.offsetTop - colMargin;
   const d1OffsetLeft = div1.offsetLeft;
-  const d1Height = div1.getBoundingClientRect().height;
+  const d1Height = div1.getBoundingClientRect().height + colMargin;
   const d1Width = div1.getBoundingClientRect().width;
   const d1Top = d1OffsetTop + d1Height;
   const d1Left = d1OffsetLeft + d1Width;
