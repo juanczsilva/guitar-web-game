@@ -166,7 +166,7 @@ function elementAnimate(item, type) {
   }
   const anim = item.animate([
     { top: '25%', left: noteLeftStart },
-    { top: '125%', left: noteLeftEnd, width: '30%' }
+    { top: '125%', left: noteLeftEnd, width: '30%', height: '5%' }
   ], {
     duration: 1500,
     easing: 'linear',
