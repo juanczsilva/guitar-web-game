@@ -15,11 +15,12 @@ console.log(`\n\u001b[33m* Serving static from '${clientPath}'`);
 const server = http.createServer(app);
 const port = (process.env.PORT || 8080);
 
+// @ts-ignore
 const io = socketio(server);
 
 io.on('connection', (sock) => {
   console.log(`\n\u001b[37m* New connection: ${sock.id}`);
-  sock.emit('msg', 'JELOU CL');
+  sock.emit('msg', 'PING CL');
 });
 
 server.on('error', (err) => {
