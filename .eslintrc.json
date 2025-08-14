@@ -20,6 +20,7 @@
         "prefer-destructuring": "off",
         "no-lonely-if": "off",
         "no-use-before-define": "off",
-        "max-len": "off"
+        "max-len": "off",
+        "object-curly-newline": "off"
     }
 }

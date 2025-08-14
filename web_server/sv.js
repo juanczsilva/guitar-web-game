@@ -34,7 +34,7 @@ server.listen(port, () => {
 app.get('/songlist', (req, res) => {
   const songs = [];
   const songsPath = './web_server/songs';
-  const songsDir = fs.readdirSync(songsPath);
+  const songsDir = fs.readdirSync(songsPath).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
   // console.log(songsDir);
   songsDir.forEach((songPath, i) => {
     // console.log(songPath, (fs.lstatSync(`${songsPath}/${songPath}`)).isDirectory());
@@ -90,6 +90,7 @@ app.get('/midi/:id', (req, res) => {
   const midiData = fs.readFileSync(`./web_server/songs/song${id}/notes.mid`);
   const midi = new Midi(midiData);
   midi.tracks = midi.tracks.filter((t) => (t.name).toUpperCase().includes('GUITAR'));
+  midi.tracks[0].notes = midi.tracks[0].notes.filter((n) => (['C7', 'C#7', 'D7', 'D#7', 'E7']).includes(n.name));
   res.send(midi);
 });
 

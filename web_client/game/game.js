@@ -137,7 +137,68 @@ function pauseHandler(pause) {
   }
 }
 
-function elementAnimate(item, type) {
+function elementAnimateLong(type, itemEnd, lnlIndex) {
+  let noteLeftStart = '';
+  let noteLeftEnd = '';
+  switch (type) {
+    case 0: noteLeftStart = '20%'; noteLeftEnd = '-50%'; break;
+    case 1: noteLeftStart = '32.5%'; noteLeftEnd = '-7.5%'; break;
+    case 2: noteLeftStart = '45%'; noteLeftEnd = '35%'; break;
+    case 3: noteLeftStart = '57.5%'; noteLeftEnd = '77.5%'; break;
+    case 4: noteLeftStart = '70%'; noteLeftEnd = '120%'; break;
+    default: break;
+  }
+  const anim = itemEnd.animate([
+    { top: '25%', left: noteLeftStart },
+    { top: '125%', left: noteLeftEnd, width: '30%', height: '5%' }
+  ], {
+    duration: 1500, easing: 'linear', iterations: 1, direction: 'normal', fill: 'forwards'
+  });
+  if (isPaused) {
+    anim.pause();
+  }
+  anim.onfinish = () => {
+    switch (type) {
+      case 0:
+        if (lastNoteHitGreen == longNotesLines[lnlIndex].noteStart.dataset.name) {
+          flameGreenTimer = setTimeout(() => { document.getElementById('flame-hit-green').style.opacity = 0; }, 0);
+        }
+        break;
+      case 1:
+        if (lastNoteHitRed == longNotesLines[lnlIndex].noteStart.dataset.name) {
+          flameRedTimer = setTimeout(() => { document.getElementById('flame-hit-red').style.opacity = 0; }, 0);
+        }
+        break;
+      case 2:
+        if (lastNoteHitYellow == longNotesLines[lnlIndex].noteStart.dataset.name) {
+          flameYellowTimer = setTimeout(() => { document.getElementById('flame-hit-yellow').style.opacity = 0; }, 0);
+        }
+        break;
+      case 3:
+        if (lastNoteHitBlue == longNotesLines[lnlIndex].noteStart.dataset.name) {
+          flameBlueTimer = setTimeout(() => { document.getElementById('flame-hit-blue').style.opacity = 0; }, 0);
+        }
+        break;
+      case 4:
+        if (lastNoteHitOrange == longNotesLines[lnlIndex].noteStart.dataset.name) {
+          flameOrangeTimer = setTimeout(() => { document.getElementById('flame-hit-orange').style.opacity = 0; }, 0);
+        }
+        break;
+      default: break;
+    }
+    itemEnd.remove();
+    longNotesLines[lnlIndex].line.remove();
+    longNotesLines[lnlIndex].noteStart.remove();
+    if (longNotesLines[lnlIndex].noteAux) longNotesLines[lnlIndex].noteAux.remove();
+    longNotesLines[lnlIndex].noteEnd = null;
+    longNotesLines[lnlIndex].line = null;
+    longNotesLines[lnlIndex].noteStart = null;
+    longNotesLines[lnlIndex].noteAux = null;
+    longNotesLines[lnlIndex].endTicks = -2;
+  };
+}
+
+function elementAnimate(item, type, isLong) {
   let noteLeftStart = '';
   let noteLeftEnd = '';
   switch (type) {
@@ -179,15 +240,20 @@ function elementAnimate(item, type) {
   }
   anim.onfinish = () => {
     if (document.body.contains(item)) {
-      item.remove();
-      onFail(false);
+      if (isLong) {
+        if (!(item.dataset.hit == 'true')) {
+          const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == item.dataset.name);
+          longNotesLines[lnlIndex].line.setAttribute('stroke', '#808080');
+          item.style.opacity = '0';
+          onFail(false);
+        }
+      } else {
+        item.remove();
+        onFail(false);
+      }
     }
   };
 }
-
-// function isValidNote(name) {
-//   return name == 'C7' || name == 'C#7' || name == 'D7' || name == 'D#7' || name == 'E7';
-// }
 
 function getNoteIdByName(name) {
   let id = 0;
@@ -213,30 +279,44 @@ function getNoteIdByName(name) {
   return id;
 }
 
-function generateNote(type) {
+function generateNote(type, duration, ticks) {
+  const isLong = ((duration / ppq) >= 0.5);
   const neck = document.getElementById('neck');
   const note = document.createElement('div');
   switch (type) {
-    case 0:
-      note.className = 'note note-green';
-      break;
-    case 1:
-      note.className = 'note note-red';
-      break;
-    case 2:
-      note.className = 'note note-yellow';
-      break;
-    case 3:
-      note.className = 'note note-blue';
-      break;
-    case 4:
-      note.className = 'note note-orange';
-      break;
-    default:
-      break;
+    case 0: note.className = 'note note-green'; break;
+    case 1: note.className = 'note note-red'; break;
+    case 2: note.className = 'note note-yellow'; break;
+    case 3: note.className = 'note note-blue'; break;
+    case 4: note.className = 'note note-orange'; break;
+    default: break;
   }
   neck.appendChild(note);
-  elementAnimate(note, type);
+  if (isLong) {
+    const endTicks = (ticks + duration);
+    const lnlName = `${endTicks}_${type}`;
+    note.dataset.isLong = (true).toString();
+    note.dataset.name = lnlName;
+    const noteLongEnd = document.createElement('div');
+    const svgLines = document.getElementById('lines');
+    const noteLongLine = svgLines.firstElementChild.cloneNode(true);
+    noteLongEnd.className = 'note note-long';
+    noteLongEnd.style.top = '25%';
+    switch (type) {
+      case 0: noteLongEnd.style.left = '20%'; noteLongLine.setAttribute('stroke', 'rgba(0,177,0,1)'); break;
+      case 1: noteLongEnd.style.left = '32.5%'; noteLongLine.setAttribute('stroke', 'rgba(177,0,0,1)'); break;
+      case 2: noteLongEnd.style.left = '45%'; noteLongLine.setAttribute('stroke', 'rgba(177,177,0,1)'); break;
+      case 3: noteLongEnd.style.left = '57.5%'; noteLongLine.setAttribute('stroke', 'rgba(0,0,177,1)'); break;
+      case 4: noteLongEnd.style.left = '70%'; noteLongLine.setAttribute('stroke', 'rgb(200, 130, 0)'); break;
+      default: break;
+    }
+    neck.appendChild(noteLongEnd);
+    svgLines.appendChild(noteLongLine);
+    longNotesLines.push({
+      name: lnlName, endTicks, type, noteStart: note, noteEnd: noteLongEnd, noteAux: null, line: noteLongLine
+    });
+  }
+  elementAnimate(note, type, isLong);
 }
 
 const colMargin = 28;
@@ -267,40 +347,68 @@ let flameRedTimer;
 let flameYellowTimer;
 let flameBlueTimer;
 let flameOrangeTimer;
+let lastNoteHitGreen;
+let lastNoteHitRed;
+let lastNoteHitYellow;
+let lastNoteHitBlue;
+let lastNoteHitOrange;
 
 function hitNote(note, type) {
-  note.remove();
+  const isLong = (note.dataset.isLong == 'true');
+  const noteName = note.dataset.name;
+  let extraNote;
+  if (isLong) {
+    note.dataset.hit = (true).toString();
+    note.style.opacity = '0';
+    extraNote = document.createElement('div');
+    extraNote.className = 'note-long-hitnote';
+    note.parentElement.appendChild(extraNote);
+    const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == noteName);
+    longNotesLines[lnlIndex].noteAux = extraNote;
+  } else {
+    note.remove();
+  }
   let flame;
   switch (type) {
     case 0:
+      lastNoteHitGreen = noteName;
       clearTimeout(flameGreenTimer);
       flame = document.getElementById('flame-hit-green');
       flame.style.opacity = 0.5;
-      flameGreenTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      if (isLong) extraNote.style.left = '-45%';
+      else flameGreenTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 1:
+      lastNoteHitRed = noteName;
       clearTimeout(flameRedTimer);
       flame = document.getElementById('flame-hit-red');
       flame.style.opacity = 0.5;
-      flameRedTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      if (isLong) extraNote.style.left = '-5%';
+      else flameRedTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 2:
+      lastNoteHitYellow = noteName;
       clearTimeout(flameYellowTimer);
       flame = document.getElementById('flame-hit-yellow');
       flame.style.opacity = 0.5;
-      flameYellowTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      if (isLong) extraNote.style.left = '35%';
+      else flameYellowTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 3:
+      lastNoteHitBlue = noteName;
       clearTimeout(flameBlueTimer);
       flame = document.getElementById('flame-hit-blue');
       flame.style.opacity = 0.5;
-      flameBlueTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      if (isLong) extraNote.style.left = '75%';
+      else flameBlueTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     case 4:
+      lastNoteHitOrange = noteName;
       clearTimeout(flameOrangeTimer);
       flame = document.getElementById('flame-hit-orange');
       flame.style.opacity = 0.5;
-      flameOrangeTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
+      if (isLong) extraNote.style.left = '115%';
+      else flameOrangeTimer = setTimeout(() => { flame.style.opacity = 0; }, flameTime);
       break;
     default:
       break;
@@ -537,26 +645,66 @@ document.addEventListener('keyup', (event) => {
     const btnGreen = document.getElementById('hitnotegreen');
     btnGreen.classList.remove('hitnote-pressed');
     greenPressed = false;
+    const greenNoteHit = document.querySelector('.note.note-green[data-is-long="true"][data-hit="true"]');
+    if (greenNoteHit) {
+      const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == greenNoteHit.dataset.name);
+      longNotesLines[lnlIndex].line.setAttribute('stroke', '#808080');
+      if (longNotesLines[lnlIndex].noteAux) longNotesLines[lnlIndex].noteAux.remove();
+      longNotesLines[lnlIndex].noteAux = null;
+      flameGreenTimer = setTimeout(() => { document.getElementById('flame-hit-green').style.opacity = 0; }, 0);
+    }
   } else if (event.key == 's') {
     // console.log(event.key);
     const btnRed = document.getElementById('hitnotered');
     btnRed.classList.remove('hitnote-pressed');
     redPressed = false;
+    const redNoteHit = document.querySelector('.note.note-red[data-is-long="true"][data-hit="true"]');
+    if (redNoteHit) {
+      const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == redNoteHit.dataset.name);
+      longNotesLines[lnlIndex].line.setAttribute('stroke', '#808080');
+      if (longNotesLines[lnlIndex].noteAux) longNotesLines[lnlIndex].noteAux.remove();
+      longNotesLines[lnlIndex].noteAux = null;
+      flameRedTimer = setTimeout(() => { document.getElementById('flame-hit-red').style.opacity = 0; }, 0);
+    }
   } else if (event.key == 'j') {
     // console.log(event.key);
     const btnYellow = document.getElementById('hitnoteyellow');
     btnYellow.classList.remove('hitnote-pressed');
     yellowPressed = false;
+    const yellowNoteHit = document.querySelector('.note.note-yellow[data-is-long="true"][data-hit="true"]');
+    if (yellowNoteHit) {
+      const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == yellowNoteHit.dataset.name);
+      longNotesLines[lnlIndex].line.setAttribute('stroke', '#808080');
+      if (longNotesLines[lnlIndex].noteAux) longNotesLines[lnlIndex].noteAux.remove();
+      longNotesLines[lnlIndex].noteAux = null;
+      flameYellowTimer = setTimeout(() => { document.getElementById('flame-hit-yellow').style.opacity = 0; }, 0);
+    }
   } else if (event.key == 'k') {
     // console.log(event.key);
     const btnBlue = document.getElementById('hitnoteblue');
     btnBlue.classList.remove('hitnote-pressed');
     bluePressed = false;
+    const blueNoteHit = document.querySelector('.note.note-blue[data-is-long="true"][data-hit="true"]');
+    if (blueNoteHit) {
+      const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == blueNoteHit.dataset.name);
+      longNotesLines[lnlIndex].line.setAttribute('stroke', '#808080');
+      if (longNotesLines[lnlIndex].noteAux) longNotesLines[lnlIndex].noteAux.remove();
+      longNotesLines[lnlIndex].noteAux = null;
+      flameBlueTimer = setTimeout(() => { document.getElementById('flame-hit-blue').style.opacity = 0; }, 0);
+    }
   } else if (event.key == 'l') {
     // console.log(event.key);
     const btnOrange = document.getElementById('hitnoteorange');
     btnOrange.classList.remove('hitnote-pressed');
     orangePressed = false;
+    const orangeNoteHit = document.querySelector('.note.note-orange[data-is-long="true"][data-hit="true"]');
+    if (orangeNoteHit) {
+      const lnlIndex = longNotesLines.findIndex((lnl) => lnl.name == orangeNoteHit.dataset.name);
+      longNotesLines[lnlIndex].line.setAttribute('stroke', '#808080');
+      if (longNotesLines[lnlIndex].noteAux) longNotesLines[lnlIndex].noteAux.remove();
+      longNotesLines[lnlIndex].noteAux = null;
+      flameOrangeTimer = setTimeout(() => { document.getElementById('flame-hit-orange').style.opacity = 0; }, 0);
+    }
   }
 });
 
@@ -571,6 +719,8 @@ let tempos = [];
 let tempoPos = 1;
 let bpm = 0;
 let ppq = 0;
+let isEndOfTrack = false;
+const longNotesLines = [];
 
 function loadMidiData(id, cb) {
   fetch(`/midi/${id}`)
@@ -586,9 +736,9 @@ function setupLoop(midiData, cb) {
   ppq = midiData.header.ppq;
   midiSec = ((60000 / (bpm * ppq)) / 60);
   ticksPerSec = (((bpm * ppq) / 60) / 60);
-  const track = (midiData.tracks).find((t) => (t.name).toUpperCase().includes('GUITAR'));
+  const track = midiData.tracks[0];
   endOfTrackTicks = track.endOfTrackTicks;
-  notes = track.notes.filter((n) => n.name == 'C7' || n.name == 'C#7' || n.name == 'D7' || n.name == 'D#7' || n.name == 'E7');
+  notes = track.notes;
   tempos = midiData.header.tempos;
   cb('loaded');
 }
@@ -616,36 +766,53 @@ function step(timestamp) {
     }
     start = timestamp;
     if (ticks >= endOfTrackTicks) {
-      setTimeout(() => {
-        calcScore();
-        player.stopVideo();
-      }, endDelay);
+      isEndOfTrack = true;
     } else {
       if (notes[notePos] && ticks >= notes[notePos].ticks) {
         let moreNotes = 0;
-        if (notes[notePos + 1] && notes[notePos].ticks == notes[notePos + 1].ticks) {
-          generateNote(getNoteIdByName(notes[notePos + 1].name));
-          moreNotes += 1;
+        for (let i = 0; i < 5; i += 1) {
+          if (notes[notePos + i] && notes[notePos].ticks == notes[notePos + i].ticks) {
+            generateNote(
+              getNoteIdByName(notes[notePos + i].name),
+              notes[notePos + i].durationTicks,
+              notes[notePos + i].ticks
+            );
+            moreNotes += 1;
+          }
         }
-        if (notes[notePos + 2] && notes[notePos].ticks == notes[notePos + 2].ticks) {
-          generateNote(getNoteIdByName(notes[notePos + 2].name));
-          moreNotes += 1;
-        }
-        if (notes[notePos + 3] && notes[notePos].ticks == notes[notePos + 3].ticks) {
-          generateNote(getNoteIdByName(notes[notePos + 3].name));
-          moreNotes += 1;
-        }
-        if (notes[notePos + 4] && notes[notePos].ticks == notes[notePos + 4].ticks) {
-          generateNote(getNoteIdByName(notes[notePos + 4].name));
-          moreNotes += 1;
-        }
-        generateNote(getNoteIdByName(notes[notePos].name));
-        notePos += (1 + moreNotes);
-        if (!isPaused) window.requestAnimationFrame(step);
-      } else {
-        if (!isPaused) window.requestAnimationFrame(step);
+        notePos += moreNotes;
+      }
+      if (longNotesLines.length > 0) {
+        longNotesLines.forEach((lnl, i) => {
+          if (lnl.endTicks > -1 && ticks >= lnl.endTicks) {
+            elementAnimateLong(lnl.type, lnl.noteEnd, i);
+            lnl.endTicks = -1;
+          }
+        });
       }
     }
+  }
+
+  if (longNotesLines.length > 0) {
+    const svgLinesRect = document.getElementById('lines').getBoundingClientRect();
+    longNotesLines.forEach((lnl) => {
+      if (lnl.endTicks > -2) {
+        const noteStartRect = (lnl.noteAux ? lnl.noteAux.getBoundingClientRect() : lnl.noteStart.getBoundingClientRect());
+        const noteEndRect = lnl.noteEnd.getBoundingClientRect();
+        const x1 = noteStartRect.left + noteStartRect.width / 2 - svgLinesRect.left;
+        const y1 = noteStartRect.top + noteStartRect.height / 2 - svgLinesRect.top;
+        const x2 = noteEndRect.left + noteEndRect.width / 2 - svgLinesRect.left;
+        const y2 = noteEndRect.top + noteEndRect.height - svgLinesRect.top;
+        lnl.line.setAttribute('x1', x1);
+        lnl.line.setAttribute('y1', y1);
+        lnl.line.setAttribute('x2', ((y1 > y2) ? x2 : x1));
+        lnl.line.setAttribute('y2', ((y1 > y2) ? y2 : y1));
+      }
+    });
+  }
+
+  if (isEndOfTrack) {
+    setTimeout(() => { calcScore(); player.stopVideo(); }, endDelay);
   } else {
     if (!isPaused) window.requestAnimationFrame(step);
   }
